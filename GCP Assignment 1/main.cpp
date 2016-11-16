@@ -4,6 +4,7 @@
 #include "misc/Utility.h"
 #include "misc/Log.h"
 #include "states/StateManager.h"
+#include "states/MainState.h"
 #include "ResourceManager.h"
 #include "input/InputManager.h"
 
@@ -47,6 +48,8 @@ int main(int argc, char **argv)
 	StateManager* stateManager = new StateManager((int)platform->getWindowSize().x, (int)platform->getWindowSize().y);
 	
 	ResourceManager::setRenderer(renderer);
+
+	stateManager->addState(new MainState(stateManager, platform));
 
 	unsigned int lastTime = SDL_GetTicks();
 
