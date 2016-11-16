@@ -77,7 +77,7 @@ bool Platform::initSDL(bool openGL)
 	windowSize = Vec2(1280, 720);
 
 	window = SDL_CreateWindow(
-		"Bygone Brewery",
+		"GCP Assignment 1",
 		SDL_WINDOWPOS_CENTERED, 
 		SDL_WINDOWPOS_CENTERED,
 		(int) windowSize.x, 
