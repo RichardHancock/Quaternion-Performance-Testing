@@ -48,6 +48,17 @@ std::string Utility::intToString(int num)
 	
 }
 
+std::string Utility::intToString(uint64_t num)
+{
+	std::stringstream stream;
+
+	stream << num;
+	std::string result = stream.str();
+
+	return result;
+
+}
+
 std::string Utility::floatToString(float num)
 {
 	std::stringstream stream;

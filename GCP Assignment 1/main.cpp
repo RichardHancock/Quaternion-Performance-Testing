@@ -7,6 +7,7 @@
 #include "states/MainState.h"
 #include "ResourceManager.h"
 #include "input/InputManager.h"
+#include "misc/PerformanceCounter.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -39,6 +40,7 @@ int main(int argc, char **argv)
 
 	
 	Utility::randomInit();
+	PerformanceCounter::initSubsystem();
 
 	SDL_Window* window = platform->getWindow();
 

@@ -154,6 +154,7 @@
     <ClInclude Include="misc\Colour.h" />
     <ClInclude Include="misc\Log.h" />
     <ClInclude Include="misc\Mat4.h" />
+    <ClInclude Include="misc\PerformanceCounter.h" />
     <ClInclude Include="misc\Quat.h" />
     <ClInclude Include="misc\Utility.h" />
     <ClInclude Include="misc\Vec2.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="misc\Colour.cpp" />
     <ClCompile Include="misc\Log.cpp" />
+    <ClCompile Include="misc\PerformanceCounter.cpp" />
     <ClCompile Include="misc\Utility.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Resource.cpp" />

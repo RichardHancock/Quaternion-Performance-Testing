@@ -90,6 +90,9 @@
     <ClInclude Include="misc\Quat.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="misc\PerformanceCounter.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp">
@@ -133,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="states\MainState.cpp">
       <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="misc\PerformanceCounter.cpp">
+      <Filter>Source Files\Misc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
