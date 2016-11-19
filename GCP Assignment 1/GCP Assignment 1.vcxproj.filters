@@ -87,6 +87,9 @@
     <ClInclude Include="misc\Vec4.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="misc\Quat.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp">

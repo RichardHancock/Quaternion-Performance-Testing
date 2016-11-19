@@ -131,9 +131,9 @@ inline std::ostream& operator << (std::ostream& os, const Vec3& a)
 }
 inline bool operator == (const Vec3& a, const Vec3& b)
 {
-	return (a.x == b.x && a.y == b.y && a.z == b.z) ? true : false;
+	return (a.x == b.x && a.y == b.y && a.z == b.z);
 }
 inline bool operator != (const Vec3& a, const Vec3& b)
 {
-	return (a.x != b.x || a.y != b.y || a.z != b.z) ? true : false;
+	return (a.x != b.x || a.y != b.y || a.z != b.z);
 }

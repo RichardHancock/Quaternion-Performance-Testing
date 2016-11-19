@@ -46,8 +46,8 @@ public:
 		temp.x = pow(x, 2);
 		temp.y = pow(y, 2);
 		temp.z = pow(z, 2);
-		temp.w = pow(w, 2);
-		float total = temp.x + temp.y + temp.z + temp.w;
+
+		float total = temp.x + temp.y + temp.z;
 
 		return sqrt(total);
 	}
@@ -70,6 +70,25 @@ public:
 	#endif
 		return Vec4(x / length, y / length, z / length, w / length);
 	}
+
+
+	static float dotProduct(Vec4 a, Vec4 b)
+	{
+		return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+	}
+
+	static Vec4 crossProduct(Vec4 a, Vec4 b)
+	{
+		Vec4 result;
+
+		result.x = (a.y * b.z) - (a.z * b.y);
+		result.y = (a.z * b.x) - (a.x * b.z);
+		result.z = (a.x * b.y) - (a.y * b.x);
+
+		result.w = 1;
+		return result;
+	}
+
 
 	Vec4* operator += (Vec4 b)
 	{
@@ -112,14 +131,20 @@ inline Vec4 operator - (Vec4 a, Vec4 b)
 
 inline Vec4 operator * (Vec4 a, Vec4 b)
 {
+	return Vec4::crossProduct(a, b);
+}
+
+inline Vec4 operator * (Vec4 a, float b)
+{
 	Vec4 result;
-	result.x = a.x * b.x;
-	result.y = a.y * b.y;
-	result.z = a.z * b.z;
-	result.w = a.w * b.w;
+	result.x = a.x * b;
+	result.y = a.y * b;
+	result.z = a.z * b;
+	result.w = a.w * b;
 	return result;
 }
 
+/*
 inline Vec4 operator / (Vec4 a, Vec4 b)
 {
 	Vec4 result;
@@ -129,7 +154,7 @@ inline Vec4 operator / (Vec4 a, Vec4 b)
 	result.w = a.w / b.w;
 	return result;
 }
-
+*/
 
 inline std::ostream& operator << (std::ostream& os, const Vec4& a)
 {
@@ -138,9 +163,9 @@ inline std::ostream& operator << (std::ostream& os, const Vec4& a)
 }
 inline bool operator == (const Vec4& a, const Vec4& b)
 {
-	return (a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w) ? true : false;
+	return (a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w);
 }
 inline bool operator != (const Vec4& a, const Vec4& b)
 {
-	return (a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w) ? true : false;
+	return (a.x != b.x || a.y != b.y || a.z != b.z || a.w != b.w);
 }

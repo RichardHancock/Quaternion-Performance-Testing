@@ -169,9 +169,9 @@ inline std::ostream &operator << (std::ostream& os, Vec2& a)
 }
 inline bool operator == (const Vec2& a, const Vec2& b)
 {
-	return (a.x == b.x && a.y == b.y) ? true : false;
+	return (a.x == b.x && a.y == b.y);
 }
 inline bool operator != (const Vec2& a, const Vec2& b)
 {
-	return (a.x != b.x || a.y != b.y) ? true : false;
+	return (a.x != b.x || a.y != b.y);
 }

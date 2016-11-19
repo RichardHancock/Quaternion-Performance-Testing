@@ -154,6 +154,7 @@
     <ClInclude Include="misc\Colour.h" />
     <ClInclude Include="misc\Log.h" />
     <ClInclude Include="misc\Mat4.h" />
+    <ClInclude Include="misc\Quat.h" />
     <ClInclude Include="misc\Utility.h" />
     <ClInclude Include="misc\Vec2.h" />
     <ClInclude Include="misc\Vec3.h" />
