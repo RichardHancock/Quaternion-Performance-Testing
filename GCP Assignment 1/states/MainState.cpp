@@ -4,11 +4,19 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	: State(manager, platform)
 {
 	stateName = "Main State";
+
+	font = TTF_OpenFont("resources/fonts/OpenSans-Regular.ttf", 16);
+
+	plusButton = new UIButton(Vec2(10, 100), ResourceManager::getTexture("plusButton.png"));
+	minusButton = new UIButton(Vec2(200, 100), ResourceManager::getTexture("minusButton.png"));
 }
 
 MainState::~MainState()
 {
+	TTF_CloseFont(font);
 
+	delete plusButton;
+	delete minusButton;
 }
 
 bool MainState::eventHandler()
@@ -55,10 +63,12 @@ bool MainState::eventHandler()
 
 void MainState::update(float dt)
 {
-
+	plusButton->update(dt);
+	minusButton->update(dt);
 }
 
 void MainState::render()
 {
-
+	plusButton->render(Vec2(64.0f));
+	minusButton->render(Vec2(64.0f));
 }

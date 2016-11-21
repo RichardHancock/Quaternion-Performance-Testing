@@ -93,6 +93,9 @@
     <ClInclude Include="misc\PerformanceCounter.h">
       <Filter>Header Files\Misc</Filter>
     </ClInclude>
+    <ClInclude Include="UIButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp">
@@ -139,6 +142,9 @@
     </ClCompile>
     <ClCompile Include="misc\PerformanceCounter.cpp">
       <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

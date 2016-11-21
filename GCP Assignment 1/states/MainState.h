@@ -2,6 +2,10 @@
 
 #include "State.h"
 
+#include <SDL_ttf.h>
+
+#include "../UIButton.h"
+
 class MainState : public State
 {
 public:
@@ -31,4 +35,11 @@ public:
 	@brief Render any sprites relevant to the state
 	*/
 	virtual void render();
+
+private:
+
+	TTF_Font* font;
+
+	UIButton* plusButton;
+	UIButton* minusButton;
 };

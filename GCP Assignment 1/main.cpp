@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 		ResourceManager::update(dt);
 
 		//Render
-		SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 165, 165, 165, 255);
 		SDL_RenderClear(renderer);
 
 		stateManager->render();
