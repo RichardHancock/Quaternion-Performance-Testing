@@ -340,7 +340,7 @@ void GameModel::deleteTexturesFromGPU()
 	glBindVertexArray(0);
 }
 
-void GameModel::draw(Mat4 modelMatrix, glm::mat4& viewMatrix, glm::mat4& projMatrix, Shader* shader)
+void GameModel::draw(Mat4 modelMatrix,	Mat4 viewMatrix, glm::mat4& projMatrix, Shader* shader)
 {
 	glUseProgram(shader->getProgram());
 

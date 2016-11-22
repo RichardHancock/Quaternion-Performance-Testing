@@ -180,6 +180,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="misc\Colour.cpp" />
     <ClCompile Include="misc\Log.cpp" />
+    <ClCompile Include="misc\Mat4.cpp" />
     <ClCompile Include="misc\PerformanceCounter.cpp" />
     <ClCompile Include="misc\Utility.cpp" />
     <ClCompile Include="Platform.cpp" />

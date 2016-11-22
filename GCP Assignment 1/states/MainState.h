@@ -37,7 +37,7 @@ public:
 private:
 
 	TTF_Font* font;
-
+	float rotation;
 	Shader* modelShader;
 	Shader* uiShader;
 

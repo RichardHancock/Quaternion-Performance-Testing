@@ -15,6 +15,7 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	uiShader = new Shader(shaderDir + "2D vertex.shader", shaderDir + "2D fragment.shader");
 
 	test = ResourceManager::getModel("barrel.obj", ResourceManager::getTexture("barrel.png"));
+	rotation = 0;
 }
 
 MainState::~MainState()
@@ -69,7 +70,7 @@ bool MainState::eventHandler()
 
 void MainState::update(float dt)
 {
-	
+	rotation += 1.0f * dt;
 }
 
 void MainState::render()
@@ -77,10 +78,29 @@ void MainState::render()
 
 	Mat4 modelMatrix = Mat4(1.0f);
 	modelMatrix.x.w = 5.0f;
-	glm::mat4 viewMatrix = glm::translate(glm::mat4(1), glm::vec3(0, -2.0f, -10.5f));
+	modelMatrix = Mat4::rotateX(modelMatrix, rotation);
+	modelMatrix = Mat4::rotateY(modelMatrix, rotation);
+	modelMatrix = Mat4::rotateZ(modelMatrix, rotation);
+
+	Mat4 viewMatrix = Mat4::translate(Mat4(1.0f), Vec4(0.0f, -2.0f, -10.5f, 1.0f));
 
 	// Construct a projection matrix for the camera
 	glm::mat4 projMatrix = glm::perspective(45.0f, 16.0f / 9.0f, 0.1f, 200.0f);
 
+	test->draw(modelMatrix, viewMatrix, projMatrix, modelShader);
+
+	modelMatrix.x.w = 0.0f;
+	test->draw(modelMatrix, viewMatrix, projMatrix, modelShader);
+
+	modelMatrix.x.w = -5.0f;
+	test->draw(modelMatrix, viewMatrix, projMatrix, modelShader);
+
+	modelMatrix.z.w = -10.0f;
+	test->draw(modelMatrix, viewMatrix, projMatrix, modelShader);
+
+	modelMatrix.x.w = 0.0f;
+	test->draw(modelMatrix, viewMatrix, projMatrix, modelShader);
+
+	modelMatrix.x.w = 5.0f;
 	test->draw(modelMatrix, viewMatrix, projMatrix, modelShader);
 }

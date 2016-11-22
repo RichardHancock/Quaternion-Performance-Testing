@@ -66,21 +66,12 @@ public:
 		return result;
 	}
 
+	static Mat4 translate(Mat4& mat, Vec4 pos);
 
-	static Mat4 rotateX(Mat4& mat, float angle)
-	{
-		float angleSin = sinf(angle);
-		float angleCos = cosf(angle);
+	static Mat4 rotateX(Mat4& mat, float angle);
+	static Mat4 rotateY(Mat4& mat, float angle);
+	static Mat4 rotateZ(Mat4& mat, float angle);
 
-		Mat4 rotationMat(
-			Vec4(1.0f, 0.0f, 0.0f, 0.0f),
-			Vec4(0.0f, angleCos, angleSin, 0.0f),
-			Vec4(0.0f, -angleSin, angleCos, 0.0f),
-			Vec4(0.0f, 0.0f, 0.0f, 1.0f)
-		);
-
-		//return mat * rotationMat;
-	}
 
 	float* getValuePtr()
 	{

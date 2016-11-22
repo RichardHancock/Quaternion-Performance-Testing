@@ -53,7 +53,7 @@ public:
 	 @param [in,out] projMatrix  The projection matrix.
 	 @param [in,out] shader		 Shader used for rendering this model.
 	 */
-	void draw(Mat4 modelMatrix, glm::mat4& viewMatrix, glm::mat4& projMatrix, Shader* shader);
+	void draw(Mat4 modelMatrix, Mat4 viewMatrix, glm::mat4& projMatrix, Shader* shader);
 
 	void draw2D(Shader* shader);
 private:
