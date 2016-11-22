@@ -1,6 +1,7 @@
 #include "MainState.h"
 
 #include "glm/gtc/matrix_transform.hpp"
+#include "../misc/Mat4.h"
 
 MainState::MainState(StateManager * manager, Platform * platform)
 	: State(manager, platform)
@@ -68,13 +69,14 @@ bool MainState::eventHandler()
 
 void MainState::update(float dt)
 {
-
+	
 }
 
 void MainState::render()
 {
 
-	glm::mat4 modelMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
+	Mat4 modelMatrix = Mat4(1.0f);
+	modelMatrix.x.w = 5.0f;
 	glm::mat4 viewMatrix = glm::translate(glm::mat4(1), glm::vec3(0, -2.0f, -10.5f));
 
 	// Construct a projection matrix for the camera

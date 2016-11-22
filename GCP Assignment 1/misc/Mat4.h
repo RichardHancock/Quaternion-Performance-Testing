@@ -67,7 +67,7 @@ public:
 	}
 
 
-	void rotateX(float angle)
+	static Mat4 rotateX(Mat4& mat, float angle)
 	{
 		float angleSin = sinf(angle);
 		float angleCos = cosf(angle);
@@ -79,9 +79,13 @@ public:
 			Vec4(0.0f, 0.0f, 0.0f, 1.0f)
 		);
 
-		//HERE
+		//return mat * rotationMat;
 	}
 
+	float* getValuePtr()
+	{
+		return &x.x;
+	}
 
 	Mat4* operator += (Mat4 b)
 	{
@@ -99,6 +103,33 @@ public:
 		z -= b.z;
 		w -= b.w;
 		return this;
+	}
+
+	inline const float* operator [] (unsigned int index) const
+	{
+		//ONLY USED FOR RENDERING, NOT THE TRANSFORMATIONS SO DOES NOT AFFECT BENCHMARK RESULTS
+		//Not the best solution, in future rewrite to be an array of floats
+		
+		if (index >= 0 && index < 4)
+		{
+			return x[index];
+		}
+		else if (index >= 4 && index < 8)
+		{
+			return y[index - 4];
+		}
+		else if (index >= 8 && index < 12)
+		{
+			return z[index - 8];
+		}
+		else if (index >= 12 && index < 16)
+		{
+			return w[index - 12];
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 };
 
@@ -122,9 +153,39 @@ inline Mat4 operator - (Mat4 a, Mat4 b)
 	return result;
 }
 
+inline Mat4 operator * (Mat4 a, Mat4 b)
+{
+	Mat4 result;
+	result.x = Vec4(
+		a.x.x * b.x.x + a.x.y * b.y.x + a.x.z * b.z.x + a.x.w * b.w.x,
+		a.x.x * b.x.y + a.x.y * b.y.y + a.x.z * b.z.y + a.x.w * b.w.y,
+		a.x.x * b.x.z + a.x.y * b.y.z + a.x.z * b.z.z + a.x.w * b.w.z,
+		a.x.x * b.x.w + a.x.y * b.y.w + a.x.z * b.z.w + a.x.w * b.w.w
+	);
+	result.y = Vec4(
+		a.y.x * b.x.x + a.y.y * b.y.x + a.y.z * b.z.x + a.y.w * b.w.x,
+		a.y.x * b.x.y + a.y.y * b.y.y + a.y.z * b.z.y + a.y.w * b.w.y,
+		a.y.x * b.x.z + a.y.y * b.y.z + a.y.z * b.z.z + a.y.w * b.w.z,
+		a.y.x * b.x.w + a.y.y * b.y.w + a.y.z * b.z.w + a.y.w * b.w.w
+	);
+	result.z = Vec4(//Was copied from above so if error CHECK HERE
+		a.z.x * b.x.x + a.z.y * b.y.x + a.z.z * b.z.x + a.z.w * b.w.x,
+		a.z.x * b.x.y + a.z.y * b.y.y + a.z.z * b.z.y + a.z.w * b.w.y,
+		a.z.x * b.x.z + a.z.y * b.y.z + a.z.z * b.z.z + a.z.w * b.w.z,
+		a.z.x * b.x.w + a.z.y * b.y.w + a.z.z * b.z.w + a.z.w * b.w.w
+	);
+	result.w = Vec4(
+		a.w.x * b.x.x + a.w.y * b.y.x + a.w.z * b.z.x + a.w.w * b.w.x,
+		a.w.x * b.x.y + a.w.y * b.y.y + a.w.z * b.z.y + a.w.w * b.w.y,
+		a.w.x * b.x.z + a.w.y * b.y.z + a.w.z * b.z.z + a.w.w * b.w.z,
+		a.w.x * b.x.w + a.w.y * b.y.w + a.w.z * b.z.w + a.w.w * b.w.w
+	);
+	return result;
+}
+
 inline Mat4 operator * (Mat4 a, Vec4 b)
 {
-	Mat4 result(0.0f);
+	Mat4 result;
 	result.x = a.x * b;
 	result.y = a.y * b;
 	result.z = a.z * b;
@@ -134,7 +195,7 @@ inline Mat4 operator * (Mat4 a, Vec4 b)
 
 inline Mat4 operator * (Mat4 a, float b)
 {
-	Mat4 result(0.0f);
+	Mat4 result;
 	result.x = a.x * b;
 	result.y = a.y * b;
 	result.z = a.z * b;

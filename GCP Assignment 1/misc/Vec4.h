@@ -107,7 +107,34 @@ public:
 		return this;
 	}
 
+	inline const float* operator [] (unsigned int index) const
+	{
+		//ONLY USED FOR RENDERING, NOT THE TRANSFORMATIONS SO DOES NOT AFFECT BENCHMARK RESULTS
+		//Not the best solution, in future rewrite to be an array of floats
+		switch (index)
+		{
+		case 0:
+			return &x;
+			break;
+		case 1:
+			return &y;
+			break;
+		case 2:
+			return &z;
+			break;
+		case 3:
+			return &w;
+			break;
+		default:
+			return nullptr;
+			break;
+		}
+	}
+	
+
 };
+
+
 
 inline Vec4 operator + (Vec4 a, Vec4 b)
 {

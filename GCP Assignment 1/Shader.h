@@ -4,8 +4,9 @@
 #include <string>
 #include <map>
 #include <glm/glm.hpp>
-
 #include <SDL.h>
+
+#include "misc/Mat4.h"
 
 /** 
 @brief A GLSL shader program. 
@@ -38,6 +39,7 @@ public:
 	void setUniform(std::string name, const glm::vec3 & v);
 	void setUniform(std::string name, const glm::vec4 & v);
 	void setUniform(std::string name, const glm::mat4 & m);
+	void setUniform(std::string name, const Mat4 & m);
 	void setUniform(std::string name, const glm::mat3 & m);
 	void setUniform(std::string name, float val);
 	void setUniform(std::string name, int val);
