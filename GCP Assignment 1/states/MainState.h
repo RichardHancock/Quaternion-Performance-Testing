@@ -4,8 +4,6 @@
 
 #include <SDL_ttf.h>
 
-#include "../UIButton.h"
-
 class MainState : public State
 {
 public:
@@ -40,6 +38,8 @@ private:
 
 	TTF_Font* font;
 
-	UIButton* plusButton;
-	UIButton* minusButton;
+	Shader* modelShader;
+	Shader* uiShader;
+
+	GameModel* test;
 };

@@ -5,11 +5,16 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <assimp/Importer.hpp>
 
+#include "GameModel.h"
 #include "Audio.h"
 #include "Texture.h"
 #include "Resource.h"
 #include "misc/Utility.h"
+
+// Forward Declaration
+class GameModel;
 
 /**
 @brief Manager for resources of most types.
@@ -39,6 +44,20 @@ public:
 	static Audio* getAudio(std::string audioFilename, bool isMusic, bool defaultPath = true);
 
 	/**
+	@brief Gets a model, loads the model if not already loaded.
+
+	@param modelFilename    Filename of the model file.
+	@param [in,out] texture Standard Texture.
+	@param defaultPath	    true to use default model path.
+
+	@return null if it fails, else the model.
+
+	@todo Support multi mesh models.
+	*/
+	static GameModel* getModel(std::string modelFilename, Texture* texture, bool defaultPath = true);
+
+
+	/**
 	@brief Gets a texture, loads the texture if not already loaded.
 	
 	@param textureFilename Filename of the texture file.
@@ -66,15 +85,22 @@ public:
 	};
 
 	/** @brief The directory for the relevant asset type */
-	static const std::string audioDir, textureDir;
+	static const std::string modelDir, shaderDir, audioDir, textureDir;
 
 private:
+
+	/** @brief The models. */
+	static std::unordered_map<std::string, GameModel*> models;
 
 	/** @brief The audio. */
 	static std::unordered_map<std::string, Audio*> audio;
 
 	/** @brief The textures. */
 	static std::unordered_map<std::string, Texture*> textures;
+
+	/** @brief The model importer from Assimp. */
+	static Assimp::Importer* modelImporter;
+
 
 	/** @brief Only check the internal resources every 10 seconds. */
 	static const float UPDATE_DELAY;

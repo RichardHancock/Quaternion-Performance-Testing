@@ -26,6 +26,10 @@ Platform::~Platform()
 		SDL_DestroyRenderer(renderer);
 	}
 
+	if (context != nullptr) {
+		SDL_GL_DeleteContext(context);
+	}
+
 	SDL_DestroyWindow(window);
 }
 
@@ -73,6 +77,25 @@ bool Platform::initSDL(bool openGL)
 	}
 	
 
+	//Set OpenGL params
+	///@todo Make these configurable
+	if (openGL)
+	{
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
+	
+	}
+
+
 	uint32_t windowFlags = SDL_WINDOW_OPENGL;
 	windowSize = Vec2(1280, 720);
 
@@ -94,12 +117,28 @@ bool Platform::initSDL(bool openGL)
 	}
 	
 
-	renderer = SDL_CreateRenderer(window, -1, 0);
-		
-	if (renderer == nullptr)
+	if (openGL)
 	{
-		Log::logE("SDL Renderer failed to be created: " + std::string(SDL_GetError()));
-		status = false;
+		context = SDL_GL_CreateContext(window);
+
+		if (context == nullptr) {
+			status = false;
+			Log::logE("GL context failed to be created: " + std::string(SDL_GetError()));
+		}
+
+		if (!initGLEW()) {
+			status = false;
+		}
+	}
+	else
+	{
+		renderer = SDL_CreateRenderer(window, -1, 0);
+
+		if (renderer == nullptr)
+		{
+			Log::logE("SDL Renderer failed to be created: " + std::string(SDL_GetError()));
+			status = false;
+		}
 	}
 	
 
@@ -176,6 +215,26 @@ bool Platform::isFeatureSupported(std::string feature)
 	}
 
 	return features[feature];
+}
+
+bool Platform::initGLEW()
+{
+	glewExperimental = GL_TRUE;
+
+	GLenum err = glewInit();
+	if (GLEW_OK != err)
+	{
+		Log::logE("GLEW failed to initialise with message : " + std::string((char*)glewGetErrorString(err)));
+		return false;
+	}
+	Log::logI("Using GLEW " + std::string((char*)glewGetString(GLEW_VERSION)));
+
+	Log::logI("OpenGL Vendor: " + std::string((char*)glGetString(GL_VENDOR)));
+	Log::logI("OpenGL Renderer: " + std::string((char*)glGetString(GL_RENDERER)));
+	Log::logI("OpenGL Version: " + std::string((char*)glGetString(GL_VERSION)));
+	Log::logI("OpenGL Shading Language Version: " + std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)));
+
+	return true;
 }
 
 void Platform::checkFeatureSupport()

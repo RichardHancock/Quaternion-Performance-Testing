@@ -32,24 +32,21 @@ int main(int argc, char **argv)
 	//Initialise platform class and all dependencies
 	Platform* platform = new Platform();
 
-	if (!platform->initSDL(false))
+	if (!platform->initSDL(true))
 	{
 		Log::logE("SDL Failed to initialize");
 		exit(1);
 	}
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_MULTISAMPLE);
 	
 	Utility::randomInit();
 	PerformanceCounter::initSubsystem();
 
 	SDL_Window* window = platform->getWindow();
 
-	SDL_Renderer* renderer = platform->getRenderer();
-	SDL_RenderSetLogicalSize(renderer, 1280, 720);
-
 	StateManager* stateManager = new StateManager((int)platform->getWindowSize().x, (int)platform->getWindowSize().y);
-	
-	ResourceManager::setRenderer(renderer);
 
 	stateManager->addState(new MainState(stateManager, platform));
 
@@ -75,12 +72,14 @@ int main(int argc, char **argv)
 		ResourceManager::update(dt);
 
 		//Render
-		SDL_SetRenderDrawColor(renderer, 165, 165, 165, 255);
-		SDL_RenderClear(renderer);
+		// Specify the colour to clear the framebuffer to
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		// This writes the above colour to the colour part of the framebuffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		stateManager->render();
 
-		SDL_RenderPresent(renderer);
+		SDL_GL_SwapWindow(window);
 
 		if (dt < (1.0f / 50.0f))
 		{

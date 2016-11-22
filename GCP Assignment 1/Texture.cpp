@@ -1,193 +1,79 @@
 #include "Texture.h"
 
+#include <iostream>
 #include <assert.h>
 
 #include "misc/Log.h"
 
-Texture::Texture(std::string filename, SDL_Renderer* renderer, bool keepSurface)
-	: Resource(), keepSurface(keepSurface)
-{
-	texture = nullptr;
-	load(filename, renderer);
+Texture::Texture(std::string filename)
+	: Resource()
+{	
+	load(filename);
 }
-Texture::Texture(SDL_Surface* surface, SDL_Renderer* renderer, bool keepSurface)
-	: Resource(), keepSurface(keepSurface)
+
+Texture::Texture(SDL_Surface* surface)
+	: Resource()
 {
-	texture = nullptr;
-	load(surface, renderer);
+	load(surface);
 }
+
 Texture::~Texture()
 {
-	if (texture != nullptr)
-		SDL_DestroyTexture(texture);
-
-	if (keepSurface)
-	{
-		SDL_FreeSurface(surface);
-	}
+	SDL_FreeSurface(surface);
 }
 
-bool Texture::load(std::string filename, SDL_Renderer* renderer)
+bool Texture::load(std::string filename)
 {
-	SDL_Surface *image = IMG_Load(filename.c_str());
-	if (!image)
+	surface = IMG_Load(filename.c_str());
+	if (!surface)
 	{
 		// We'll do a quick check here because it's easy to get filenames or directories wrong
-		Log::logE("Can't find image named " + filename + " " + std::string(IMG_GetError()));
+		Log::logW("Can't find image named " + filename + " " + std::string(IMG_GetError()));
 		return false;
 	}
 
-	currentRenderer = renderer;
-	Texture::createTexture(*image); //Need error check here
+	return true;
+}
+
+bool Texture::load(SDL_Surface* image)
+{
 	surface = image;
-	if (!keepSurface)
+	if (!image)
 	{
-		SDL_FreeSurface(image);
-	}
-	return true;
-}
-
-bool Texture::load(SDL_Surface* image, SDL_Renderer* renderer)
-{
-	currentRenderer = renderer;
-	Texture::createTexture(*image); //Need error check here
-	if (!keepSurface)
-	{
-		SDL_FreeSurface(image);
-	}
-	else {
-		this->surface = image;
+		// We'll do a quick check here because it's easy to get filenames or directories wrong
+		Log::logW("Image passed to Texture::load was null: " + std::string(IMG_GetError()));
+		return false;
 	}
 
 	return true;
 }
 
-bool Texture::createTexture(SDL_Surface &image)
+Texture* Texture::copy()
 {
-	texture = SDL_CreateTextureFromSurface(currentRenderer, &image);
+	SDL_PixelFormat* format = surface->format;
 
-	// This is done because a float* and int* conflict.
-	int tempDimensionsX;
-	int tempDimensionsY;
-	SDL_QueryTexture(texture, NULL, NULL, &tempDimensionsX, &tempDimensionsY);
+	SDL_Surface* tempSurface = SDL_CreateRGBSurface(
+		0,
+		surface->w,
+		surface->h,
+		format->BitsPerPixel,
+		format->Rmask,
+		format->Gmask,
+		format->Bmask,
+		format->Amask
+		);
+	
+	assert(tempSurface != nullptr);
 
-	dimensions.x = (float)tempDimensionsX;
-	dimensions.y = (float)tempDimensionsY;
+	//TODO: maybe should set blend modes to none
 
-	return (texture ? true : false);
+	SDL_BlitSurface(surface, NULL, tempSurface, NULL);
+
+	return new Texture(tempSurface);
 }
 
-void Texture::draw(Vec2 pos)
-{
-	SDL_Rect destRect;
-
-	destRect.x = (int)pos.x;
-	destRect.y = (int)pos.y;
-
-	// Query the texture to get its original width and height
-	destRect.w = (int)dimensions.x;
-	destRect.h = (int)dimensions.y;
-
-	// Here we are telling the renderer to copy the texture to our screen,
-	// at the position of the rectangle we specify
-	SDL_RenderCopy(currentRenderer, texture, NULL, &destRect);
-}
-
-void Texture::draw(Vec2 pos, float rotation)
-{
-	SDL_Rect destRect;
-
-	destRect.x = (int)pos.x;
-	destRect.y = (int)pos.y;
-
-	// Query the texture to get its original width and height
-	destRect.w = (int)dimensions.x;
-	destRect.h = (int)dimensions.y;
-
-	// Here we are telling the renderer to copy the texture to our screen,
-	// at the position and rotation we specify
-	SDL_RenderCopyEx(currentRenderer, texture, NULL, &destRect, rotation, NULL, SDL_FLIP_NONE);
-}
-
-void Texture::draw(Vec2 pos, float rotation, Vec2 pivot)
-{
-	SDL_Rect destRect;
-
-	destRect.x = (int)pos.x;
-	destRect.y = (int)pos.y;
-
-	// Query the texture to get its original width and height
-	destRect.w = (int)dimensions.x;
-	destRect.h = (int)dimensions.y;
-
-	SDL_Point pivotPoint;
-	pivotPoint.x = (int)pivot.x;
-	pivotPoint.y = (int)pivot.y;
-
-	// Here we are telling the renderer to copy the texture to our screen,
-	// at the position and rotation we specify
-	SDL_RenderCopyEx(currentRenderer, texture, NULL, &destRect, rotation, &pivotPoint, SDL_FLIP_NONE);
-}
-
-void Texture::draw(Vec2 pos, SDL_Rect sprite_map_pos)
-{
-	SDL_Rect destRect;
-
-	destRect.x = (int)pos.x;
-	destRect.y = (int)pos.y;
-
-	// Query the texture to get its original width and height
-	destRect.w = destRect.h = sprite_map_pos.w;
-
-	// Here we are telling the renderer to copy the texture to our screen,
-	// at the position of the rectangle we specify
-	SDL_RenderCopy(currentRenderer, texture, &sprite_map_pos, &destRect);
-}
-
-void Texture::drawScaled(Vec2 pos, Vec2 scaledDimensions)
-{
-	SDL_Rect destRect;
-
-	destRect.x = (int)pos.x;
-	destRect.y = (int)pos.y;
-
-	destRect.w = (int)scaledDimensions.x;
-	destRect.h = (int)scaledDimensions.y;
-
-	// Here we are telling the renderer to copy the texture to our screen,
-	// at the position of the rectangle we specify
-	SDL_RenderCopy(currentRenderer, texture, NULL, &destRect);
-}
-void Texture::drawScaled(Vec2 pos, Vec2 scaledDimensions, SDL_Rect sprite_map_pos)
-{
-	SDL_Rect destRect;
-
-	destRect.x = (int)pos.x;
-	destRect.y = (int)pos.y;
-
-	destRect.w = (int)scaledDimensions.x;
-	destRect.h = (int)scaledDimensions.y;
-
-	// Here we are telling the renderer to copy the texture to our screen,
-	// at the position of the rectangle we specify
-	SDL_RenderCopy(currentRenderer, texture, &sprite_map_pos, &destRect);
-}
 
 Vec2 Texture::getDimensions()
 {
-	return dimensions;
-}
-
-SDL_Renderer* Texture::getRenderer()
-{
-	return currentRenderer;
-}
-
-void Texture::setColourTint(SDL_Colour c)
-{
-	//Set the texture colour tint or log an error.
-	if (SDL_SetTextureColorMod(texture, c.r, c.g, c.b) != 0)
-	{
-		Log::logW("SDL_SetTextureColorMod failed in setColourTint");
-	}
+	return (surface != nullptr ? Vec2((float) surface->w, (float) surface->h) : Vec2(0.0f));
 }

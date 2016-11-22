@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
+#include <GL/glew.h>
 
 #include "misc/Vec2.h"
 
@@ -67,6 +68,13 @@ public:
 	bool isFeatureSupported(std::string feature);
 	
 private:
+
+	/**
+	@brief Initialises glew.
+
+	@return true if it succeeds, false if it fails.
+	*/
+	bool initGLEW();
 
 	/** @brief The window. */
 	SDL_Window* window;
