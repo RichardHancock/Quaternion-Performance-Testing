@@ -66,6 +66,23 @@ public:
 		return result;
 	}
 
+
+	void rotateX(float angle)
+	{
+		float angleSin = sinf(angle);
+		float angleCos = cosf(angle);
+
+		Mat4 rotationMat(
+			Vec4(1.0f, 0.0f, 0.0f, 0.0f),
+			Vec4(0.0f, angleCos, angleSin, 0.0f),
+			Vec4(0.0f, -angleSin, angleCos, 0.0f),
+			Vec4(0.0f, 0.0f, 0.0f, 1.0f)
+		);
+
+		//HERE
+	}
+
+
 	Mat4* operator += (Mat4 b)
 	{
 		x += b.x;

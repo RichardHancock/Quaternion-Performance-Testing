@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "Mat4.h"
+#include "Vec3.h"
 
 struct Quat
 {
@@ -19,6 +20,13 @@ struct Quat
 	{
 
 	}
+
+	Quat(float w, Vec3 xyz)
+		: w(w), x(xyz.x), y(xyz.y), z(xyz.z)
+	{
+
+	}
+
 
 	float magnitude()
 	{
@@ -48,6 +56,13 @@ struct Quat
 		result.y = y + scalar;
 		result.z = z + scalar;
 		return result;
+	}
+
+	Quat rotate(float angle, Vec3 axis)
+	{
+		axis = axis * sinf(angle / 2);
+
+		return Quat(cosf(angle / 2), axis);
 	}
 
 	Mat4 getMat()
