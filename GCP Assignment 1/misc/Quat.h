@@ -69,10 +69,10 @@ struct Quat
 	{
 		Mat4 m;
 
-		float x2 = pow(x, 2);
-		float y2 = pow(y, 2);
-		float z2 = pow(z, 2);
-		float w2 = pow(w, 2);
+		float x2 = x * x;
+		float y2 = y * y;
+		float z2 = z * z;
+		float w2 = w * w;
 
 		m.x = Vec4(
 			w2 + x2 - y2 - z2,

@@ -4,6 +4,8 @@
 
 #include <SDL_ttf.h>
 
+#include "../misc/Quat.h"
+
 class MainState : public State
 {
 public:
@@ -40,6 +42,8 @@ private:
 	float rotation;
 	Shader* modelShader;
 	Shader* uiShader;
+
+	Quat* currentRotate;
 
 	GameModel* test;
 };

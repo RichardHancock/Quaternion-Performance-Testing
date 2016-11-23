@@ -2,6 +2,7 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "../misc/Mat4.h"
+#include "../misc/Quat.h"
 
 MainState::MainState(StateManager * manager, Platform * platform)
 	: State(manager, platform)
@@ -16,6 +17,8 @@ MainState::MainState(StateManager * manager, Platform * platform)
 
 	test = ResourceManager::getModel("barrel.obj", ResourceManager::getTexture("barrel.png"));
 	rotation = 0;
+
+	currentRotate = nullptr;
 }
 
 MainState::~MainState()
@@ -77,10 +80,22 @@ void MainState::render()
 {
 
 	Mat4 modelMatrix = Mat4(1.0f);
-	modelMatrix.x.w = 5.0f;
-	modelMatrix = Mat4::rotateX(modelMatrix, rotation);
-	modelMatrix = Mat4::rotateY(modelMatrix, rotation);
-	modelMatrix = Mat4::rotateZ(modelMatrix, rotation);
+	//modelMatrix.x.w = 5.0f;
+	//modelMatrix = Mat4::rotateX(modelMatrix, rotation);
+	//modelMatrix = Mat4::rotateY(modelMatrix, rotation);
+	//modelMatrix = Mat4::rotateZ(modelMatrix, rotation);
+
+	Quat rotate = Quat(1.0f, 0, 0, 0);
+	rotate = rotate.rotate(1.5f, Vec3(1.0f, 1.0f, 0.0f));
+	//Quat rotateY = Quat(1.0f, 0, 0, 0);
+	//rotateY = rotateY.rotate(rotation, Vec3(0.0f, 1.0f, 0.0f));
+	//Quat rotateZ = Quat(1.0f, 0, 0, 0);
+	//rotateY = rotateY.rotate(rotation, Vec3(0.0f, 0.0f, 1.0f));
+	//rotate = rotate * rotateY;
+	
+
+	modelMatrix = rotate.getMat();// * rotateY.getMat() * rotateZ.getMat();
+	modelMatrix.z.w = -10.0f;
 
 	Mat4 viewMatrix = Mat4::translate(Mat4(1.0f), Vec4(0.0f, -2.0f, -10.5f, 1.0f));
 
