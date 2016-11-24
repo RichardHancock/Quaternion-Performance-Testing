@@ -62,8 +62,8 @@ std::string Utility::intToString(uint64_t num)
 std::string Utility::floatToString(float num)
 {
 	std::stringstream stream;
-
-	stream << num;
+	stream.precision(2);
+	stream << std::fixed << num;
 	std::string result = stream.str();
 
 	return result;

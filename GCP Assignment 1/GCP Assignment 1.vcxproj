@@ -155,6 +155,7 @@
     <ClInclude Include="misc\Colour.h" />
     <ClInclude Include="misc\Log.h" />
     <ClInclude Include="misc\Mat4.h" />
+    <ClInclude Include="misc\MemoryCounter.h" />
     <ClInclude Include="misc\PerformanceCounter.h" />
     <ClInclude Include="misc\Quat.h" />
     <ClInclude Include="misc\Utility.h" />
@@ -181,6 +182,7 @@
     <ClCompile Include="misc\Colour.cpp" />
     <ClCompile Include="misc\Log.cpp" />
     <ClCompile Include="misc\Mat4.cpp" />
+    <ClCompile Include="misc\MemoryCounter.cpp" />
     <ClCompile Include="misc\PerformanceCounter.cpp" />
     <ClCompile Include="misc\Utility.cpp" />
     <ClCompile Include="Platform.cpp" />

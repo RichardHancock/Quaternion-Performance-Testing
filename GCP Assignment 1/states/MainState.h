@@ -32,6 +32,12 @@ public:
 	*/
 	virtual void update(float dt);
 
+	void benchmarkModeUpdate(float dt);
+
+	void createArrayOfQuats();
+
+	void createArrayOfMats();
+
 	/**
 	@brief Render any sprites relevant to the state
 	*/
@@ -39,12 +45,28 @@ public:
 
 private:
 
+	enum BenchmarkStage
+	{
+		NotRunning,
+		Started,
+		Completed
+	};
+
 	TTF_Font* font;
 	float rotation;
 	Shader* modelShader;
 	Shader* uiShader;
 
 	GameModel* test;
+
+	bool benchmarkMode;
+	BenchmarkStage benchmarkStage;
+	bool quatMode;
+
+	unsigned int amountOfTransforms;
+
+	std::vector<Quat> quatTransforms;
+	std::vector<Mat4> matTransforms;
 
 	UITextElement* currentMode;
 	UITextElement* xLabel;
@@ -54,4 +76,7 @@ private:
 	UITextElement* xCurrent;
 	UITextElement* yCurrent;
 	UITextElement* zCurrent;
+
+	UITextElement* benchmarkResult;
+	UITextElement* amountOfTransformsUI;
 };
