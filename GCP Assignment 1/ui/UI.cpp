@@ -111,6 +111,7 @@ void UITextElement::updateMergedTexture()
 		renderable->addTexture(mergedTexture, "gSampler");
 		delete textSurface;
 		textSurface = nullptr;
+		textureRequiresMerge = false;
 		return;
 	}
 
@@ -133,4 +134,5 @@ void UITextElement::updateMergedTexture()
 	
 	delete textSurface;
 	textSurface = nullptr;
+	textureRequiresMerge = false;
 }

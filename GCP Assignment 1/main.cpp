@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	}
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_MULTISAMPLE);
+	//glEnable(GL_MULTISAMPLE);
 	
 	Utility::randomInit();
 	PerformanceCounter::initSubsystem();
@@ -76,6 +76,7 @@ int main(int argc, char **argv)
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		// This writes the above colour to the colour part of the framebuffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		stateManager->render();
 

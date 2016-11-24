@@ -5,6 +5,7 @@
 #include <SDL_ttf.h>
 
 #include "../misc/Quat.h"
+#include "../ui/UI.h"
 
 class MainState : public State
 {
@@ -43,7 +44,14 @@ private:
 	Shader* modelShader;
 	Shader* uiShader;
 
-	Quat* currentRotate;
-
 	GameModel* test;
+
+	UITextElement* currentMode;
+	UITextElement* xLabel;
+	UITextElement* yLabel;
+	UITextElement* zLabel;
+
+	UITextElement* xCurrent;
+	UITextElement* yCurrent;
+	UITextElement* zCurrent;
 };

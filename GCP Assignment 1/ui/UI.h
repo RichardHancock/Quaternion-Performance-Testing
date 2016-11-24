@@ -57,16 +57,6 @@ protected:
 };
 
 
-class UIMenuItem : public UITextElement
-{
-public:
-
-
-protected:
-	bool selected;
-};
-
-
 class UIManager
 {
 public:

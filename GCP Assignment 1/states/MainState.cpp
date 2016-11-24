@@ -9,7 +9,7 @@ MainState::MainState(StateManager * manager, Platform * platform)
 {
 	stateName = "Main State";
 
-	font = TTF_OpenFont("resources/fonts/OpenSans-Regular.ttf", 16);
+	font = TTF_OpenFont("resources/fonts/OpenSans-Regular.ttf", 24);
 
 	std::string shaderDir = ResourceManager::shaderDir;
 	modelShader = new Shader(shaderDir + "standardVertex.shader", shaderDir + "standardFrag.shader");
@@ -18,7 +18,13 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	test = ResourceManager::getModel("barrel.obj", ResourceManager::getTexture("barrel.png"));
 	rotation = 0;
 
-	currentRotate = nullptr;
+	currentMode = new UITextElement(Vec2(-0.99f, -0.9f), Vec2(0.2f, -0.1f), "Animated", Colour(255, 255, 255, 255), font);
+	xLabel = new UITextElement(Vec2(0.7f, -0.8f), Vec2(0.03f, -0.07f), "X", Colour(255, 255, 255, 255), font);
+	yLabel = new UITextElement(Vec2(0.8f, -0.8f), Vec2(0.03f, -0.07f), "Y", Colour(255, 255, 255, 255), font);
+	zLabel = new UITextElement(Vec2(0.9f, -0.8f), Vec2(0.03f, -0.07f), "Z", Colour(255, 255, 255, 255), font);
+	xCurrent = new UITextElement(Vec2(0.7f, -0.9f), Vec2(0.05f, -0.1f), "10", Colour(255, 255, 255, 255), font);
+	yCurrent = new UITextElement(Vec2(0.8f, -0.9f), Vec2(0.05f, -0.1f), "10", Colour(255, 255, 255, 255), font);
+	zCurrent = new UITextElement(Vec2(0.9f, -0.9f), Vec2(0.05f, -0.1f), "10", Colour(255, 255, 255, 255), font);
 }
 
 MainState::~MainState()
@@ -27,6 +33,14 @@ MainState::~MainState()
 
 	delete modelShader;
 	delete uiShader;
+
+	delete currentMode;
+	delete xLabel;
+	delete yLabel;
+	delete zLabel;
+	delete xCurrent;
+	delete yCurrent;
+	delete zCurrent;
 }
 
 bool MainState::eventHandler()
@@ -78,15 +92,14 @@ void MainState::update(float dt)
 
 void MainState::render()
 {
-
 	Mat4 modelMatrix = Mat4(1.0f);
-	//modelMatrix.x.w = 5.0f;
-	//modelMatrix = Mat4::rotateX(modelMatrix, rotation);
-	//modelMatrix = Mat4::rotateY(modelMatrix, rotation);
-	//modelMatrix = Mat4::rotateZ(modelMatrix, rotation);
+	modelMatrix.x.w = 5.0f;
+	modelMatrix = Mat4::rotateX(modelMatrix, rotation);
+	modelMatrix = Mat4::rotateY(modelMatrix, -rotation);
+	modelMatrix = Mat4::rotateZ(modelMatrix, rotation);
 
-	Quat rotate = Quat(1.0f, 0, 0, 0);
-	rotate = rotate.rotate(1.5f, Vec3(1.0f, 1.0f, 0.0f));
+	//Quat rotate = Quat(1.0f, 0, 0, 0);
+	//rotate = rotate.rotate(2.0f, Vec3(1.0f, 1.0f, 0.0f));
 	//Quat rotateY = Quat(1.0f, 0, 0, 0);
 	//rotateY = rotateY.rotate(rotation, Vec3(0.0f, 1.0f, 0.0f));
 	//Quat rotateZ = Quat(1.0f, 0, 0, 0);
@@ -94,8 +107,8 @@ void MainState::render()
 	//rotate = rotate * rotateY;
 	
 
-	modelMatrix = rotate.getMat();// * rotateY.getMat() * rotateZ.getMat();
-	modelMatrix.z.w = -10.0f;
+	//modelMatrix = rotate.getMat();// * rotateY.getMat() * rotateZ.getMat();
+	//modelMatrix.z.w = -10.0f;
 
 	Mat4 viewMatrix = Mat4::translate(Mat4(1.0f), Vec4(0.0f, -2.0f, -10.5f, 1.0f));
 
@@ -118,4 +131,12 @@ void MainState::render()
 
 	modelMatrix.x.w = 5.0f;
 	test->draw(modelMatrix, viewMatrix, projMatrix, modelShader);
+
+	currentMode->draw(uiShader);
+	xLabel->draw(uiShader);
+	yLabel->draw(uiShader);
+	zLabel->draw(uiShader);
+	xCurrent->draw(uiShader);
+	yCurrent->draw(uiShader);
+	zCurrent->draw(uiShader);
 }
