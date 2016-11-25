@@ -48,6 +48,8 @@ private:
 
 	Vec4 determineRotation();
 
+	void prepareTransformsForRender();
+
 	enum BenchmarkStage
 	{
 		NotRunning,

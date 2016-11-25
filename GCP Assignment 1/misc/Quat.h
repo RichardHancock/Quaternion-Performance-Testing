@@ -58,11 +58,14 @@ struct Quat
 		return result;
 	}
 
-	Quat rotate(float angle, Vec3 axis)
+	void rotate(float angle, Vec3 axis)
 	{
 		axis = axis * sinf(angle / 2);
 
-		return Quat(cosf(angle / 2), axis);
+		//Flip Y axis the correct way.
+		axis.y = -axis.y;
+
+		*this = Quat(cosf(angle / 2), axis);
 	}
 
 	Mat4 getMat()

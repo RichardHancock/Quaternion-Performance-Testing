@@ -41,7 +41,7 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	currentAngle = 5;
 
 	// Construct a projection and view matrix for the camera
-	viewMat = Mat4::translate(Mat4(1.0f), Vec4(0.0f, -2.0f, -15.0f, 1.0f));
+	viewMat = Mat4::translate(Mat4(1.0f), Vec4(30.0f, -2.0f, -100.0f, 1.0f));
 	projMat = Mat4::perspective(45.0f, 16.0f / 9.0f, 0.1f, 200.0f);
 }
 
@@ -59,6 +59,7 @@ MainState::~MainState()
 	delete benchmarkTimeResult;
 	delete benchmarkMemoryResult;
 	delete amountOfTransformsUI;
+	delete benchmarkInProgress;
 }
 
 bool MainState::eventHandler()
@@ -260,8 +261,10 @@ void MainState::benchmarkModeUpdate(float dt)
 		benchmarkTimeResult->changeText("Benchmark Time: " + Utility::floatToString(timeTakenMilliSeconds, 4) + "ms");
 
 
-		//Clear Up used Memory
 		benchmarkStage = Completed;
+
+		//Prepare the transforms for Render (Translation, Scale)
+		prepareTransformsForRender();
 	}
 }
 
@@ -316,8 +319,57 @@ Vec4 MainState::determineRotation()
 	return Vec4(axis.x, axis.y, axis.z, angle);
 }
 
+void MainState::prepareTransformsForRender()
+{
+	//This will generate a Cube of objects equalling the amount of transforms
+	
+	unsigned int amountTran = amountOfTransforms[currentAmountOfTransforms];
+
+	if (amountTran > 1000)
+	{
+		amountTran = 1000;
+	}
+
+	
+	Mat4 rotateTransform = (quatMode ? quatTransforms[0].getMat() : matTransforms[0]);
+
+	double cubeRoot = std::cbrt(amountTran);
+	unsigned int axisCount = (unsigned int)std::ceil(cubeRoot);
+
+	float gap = 10.0f;
+
+	matTransforms.clear();
+	matTransforms.reserve(amountTran);
+	for (unsigned int x = 0; x < axisCount; x++)
+	{
+		for (unsigned int y = 0; y < axisCount; y++)
+		{
+			for (unsigned int z = 0; z < axisCount; z++)
+			{
+				Mat4 mat(1.0f);
+
+				mat = rotateTransform;
+
+				mat = mat.translate(mat, (Vec4((float)x, (float)y, -(float)z, 1.0f) * gap));
+
+					
+
+				matTransforms.push_back(mat);
+			}
+		}
+			
+	}
+
+
+	float halfWidthOfCube = (axisCount * gap) / 2.0f;
+	viewMat = Mat4::translate(Mat4(1.0f), Vec4(-halfWidthOfCube, -halfWidthOfCube, -50.0f, 1.0f));
+
+	Log::logI("test");
+}
+
 void MainState::render()
 {
+	/*
 	Mat4 modelMatrix = Mat4(1.0f);
 	//modelMatrix.rotate(-2.0f, Vec3(0.0f, 0.0f, 1.0f));
 	//modelMatrix = Mat4::rotateY(modelMatrix, -rotation);
@@ -337,7 +389,13 @@ void MainState::render()
 	//modelMatrix.z.w = -10.0f;
 
 	
-	test->draw(modelMatrix, viewMat, projMat, modelShader);
+	
+	*/
+	for (unsigned int i = 0; i < matTransforms.size(); i++)
+	{
+		test->draw(matTransforms[i], viewMat, projMat, modelShader);
+	}
+	
 
 	currentMode->draw(uiShader);
 	currentAngleLabel->draw(uiShader);

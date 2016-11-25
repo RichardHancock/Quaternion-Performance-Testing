@@ -166,7 +166,7 @@ inline Vec4 operator * (Vec4 a, float b)
 	result.x = a.x * b;
 	result.y = a.y * b;
 	result.z = a.z * b;
-	result.w = a.w * b;
+	result.w = a.w;
 	return result;
 }
 
