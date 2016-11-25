@@ -46,9 +46,9 @@ private:
 
 	void createArrayOfMats();
 
-	Vec4 determineRotation();
+	Vec4 determineRotation(float angleIn, bool isRadians);
 
-	void prepareTransformsForRender();
+	void createGridOfTransforms(unsigned int count, Mat4 rotateTransform);
 
 	enum BenchmarkStage
 	{
@@ -58,7 +58,9 @@ private:
 	};
 
 	TTF_Font* font;
-	float rotation;
+
+	float currentAnimationAngle;
+
 	Shader* modelShader;
 	Shader* uiShader;
 

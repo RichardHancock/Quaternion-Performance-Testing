@@ -19,7 +19,7 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	uiShader = new Shader(shaderDir + "2D vertex.shader", shaderDir + "2D fragment.shader");
 
 	test = ResourceManager::getModel("barrel.obj", ResourceManager::getTexture("barrel.png"));
-	rotation = 0;
+	currentAnimationAngle = 0.0f;
 
 	currentMode = new UITextElement(Vec2(-0.99f, -0.9f), Vec2(0.2f, -0.1f), "Animated", Colour(255, 255, 255, 255), font);
 	currentTransformMode = new UITextElement(Vec2(-0.99f, -0.8f), Vec2(0.2f, -0.1f), "Matrices", Colour(255, 255, 255, 255), font);
@@ -109,6 +109,13 @@ bool MainState::eventHandler()
 		benchmarkMode = !benchmarkMode;
 		//Swap Label
 		currentMode->changeText((benchmarkMode ? "Benchmark" : "Animated"));
+
+		//Clear these if any were left over
+		matTransforms.clear();
+		quatTransforms.clear();
+
+		//Reset the animation to beginning
+		currentAnimationAngle = 0.0f;
 	}
 
 	//Change amount of transforms being performed
@@ -133,10 +140,13 @@ bool MainState::eventHandler()
 		(currentAxis < 5 ? currentAxis++ : currentAxis = 0);
 		//Change Label
 		currentAxisLabel->changeText(axisLabels[currentAxis]);
+
+		//Reset the animation to beginning
+		currentAnimationAngle = 0.0f;
 	}
 
 	//Change Angle
-	if (InputManager::wasKeyPressed(SDLK_F5))
+	if (InputManager::wasKeyPressed(SDLK_F5) && benchmarkMode)
 	{
 		(currentAngle < 6 ? currentAngle++ : currentAngle = 0);
 		//Change Label
@@ -148,13 +158,26 @@ bool MainState::eventHandler()
 
 void MainState::update(float dt)
 {
-	
+	//If Animated Mode
 	if (!benchmarkMode)
 	{
-		rotation += 1.0f * dt;
+		currentAnimationAngle += 1.0f * dt;
+
+		if (currentAnimationAngle > Utility::TWO_PI)
+			currentAnimationAngle = 0.0f;
+
+		Log::logI(Utility::floatToString(currentAnimationAngle));
+
+		Vec4 rotationData = determineRotation(currentAnimationAngle, true);
+
+		Mat4 rotateTransform(1.0f);
+		rotateTransform.rotate(rotationData.w, Vec3(rotationData.x, rotationData.y, rotationData.z));
+
+		createGridOfTransforms(64, rotateTransform);
 	}
 	else
 	{
+		//If in benchmark mode run its update
 		benchmarkModeUpdate(dt);
 	}
 
@@ -179,7 +202,7 @@ void MainState::benchmarkModeUpdate(float dt)
 		matTransforms.shrink_to_fit();
 		quatTransforms.shrink_to_fit();
 
-		Vec4 rotationData = determineRotation();
+		Vec4 rotationData = determineRotation(angles[currentAngle], false);
 		//Extract Data for ease of viewing
 		Vec3 axis(rotationData.x, rotationData.y, rotationData.z);
 		float angle = rotationData.w;
@@ -264,7 +287,8 @@ void MainState::benchmarkModeUpdate(float dt)
 		benchmarkStage = Completed;
 
 		//Prepare the transforms for Render (Translation, Scale)
-		prepareTransformsForRender();
+		Mat4 rotateTransform = (quatMode ? quatTransforms[0].getMat() : matTransforms[0]);
+		createGridOfTransforms(amountOfTransforms[currentAmountOfTransforms], rotateTransform);
 	}
 }
 
@@ -285,13 +309,13 @@ void MainState::createArrayOfMats()
 	}
 }
 
-Vec4 MainState::determineRotation()
+Vec4 MainState::determineRotation(float angleIn, bool isRadians)
 {
 	assert(currentAxis >= 0 && currentAxis < 6);
 	assert(currentAngle >= 0 && currentAngle < 7);
 
-	//Determine Angle
-	float angle = Utility::convertAngleToRadian(angles[currentAngle]);
+	//Convert angle to radians
+	float angle = (isRadians ? angleIn : Utility::convertAngleToRadian(angleIn));
 
 	//If current axis is odd, the Axis is a negative so flip the angle.
 	if (currentAxis % 2 == 1)
@@ -319,27 +343,23 @@ Vec4 MainState::determineRotation()
 	return Vec4(axis.x, axis.y, axis.z, angle);
 }
 
-void MainState::prepareTransformsForRender()
+void MainState::createGridOfTransforms(unsigned int count, Mat4 rotateTransform)
 {
 	//This will generate a Cube of objects equalling the amount of transforms
-	
-	unsigned int amountTran = amountOfTransforms[currentAmountOfTransforms];
 
-	if (amountTran > 1000)
+	//limit to a 1000 for performance reasons
+	if (count > 1000)
 	{
-		amountTran = 1000;
+		count = 1000;
 	}
 
-	
-	Mat4 rotateTransform = (quatMode ? quatTransforms[0].getMat() : matTransforms[0]);
-
-	double cubeRoot = std::cbrt(amountTran);
+	double cubeRoot = std::cbrt(count);
 	unsigned int axisCount = (unsigned int)std::ceil(cubeRoot);
 
 	float gap = 10.0f;
 
 	matTransforms.clear();
-	matTransforms.reserve(amountTran);
+	matTransforms.reserve(count);
 	for (unsigned int x = 0; x < axisCount; x++)
 	{
 		for (unsigned int y = 0; y < axisCount; y++)
@@ -352,62 +372,36 @@ void MainState::prepareTransformsForRender()
 
 				mat = mat.translate(mat, (Vec4((float)x, (float)y, -(float)z, 1.0f) * gap));
 
-					
-
 				matTransforms.push_back(mat);
 			}
 		}
-			
-	}
 
+	}
 
 	float halfWidthOfCube = (axisCount * gap) / 2.0f;
 	viewMat = Mat4::translate(Mat4(1.0f), Vec4(-halfWidthOfCube, -halfWidthOfCube, -50.0f, 1.0f));
-
-	Log::logI("test");
 }
 
 void MainState::render()
 {
-	/*
-	Mat4 modelMatrix = Mat4(1.0f);
-	//modelMatrix.rotate(-2.0f, Vec3(0.0f, 0.0f, 1.0f));
-	//modelMatrix = Mat4::rotateY(modelMatrix, -rotation);
-	//modelMatrix = Mat4::rotateZ(modelMatrix, rotation);
-
-	Quat rotate = Quat(1.0f, 0, 0, 0);
-	rotate = rotate.rotate(-2.0f, Vec3(0.0f, 0.0f, 1.0f));
-	//Quat rotateY = Quat(1.0f, 0, 0, 0);
-	//rotateY = rotateY.rotate(rotation, Vec3(0.0f, 1.0f, 0.0f));
-	//Quat rotateZ = Quat(1.0f, 0, 0, 0);
-	//rotateZ = rotateZ.rotate(rotation, Vec3(0.0f, 0.0f, 1.0f));
-	//rotate = rotate * rotateY * rotateZ;
-	
-	
-
-	modelMatrix = rotate.getMat();// * rotateY.getMat()// * rotateZ.getMat();
-	//modelMatrix.z.w = -10.0f;
-
-	
-	
-	*/
+	//3D
 	for (unsigned int i = 0; i < matTransforms.size(); i++)
 	{
 		test->draw(matTransforms[i], viewMat, projMat, modelShader);
 	}
 	
 
+	//2D
 	currentMode->draw(uiShader);
-	currentAngleLabel->draw(uiShader);
 	currentAxisLabel->draw(uiShader);
-
-	amountOfTransformsUI->draw(uiShader);
 
 	if (benchmarkMode)
 	{
+		amountOfTransformsUI->draw(uiShader);
 		currentTransformMode->draw(uiShader);
 		benchmarkTimeResult->draw(uiShader);
 		benchmarkMemoryResult->draw(uiShader);
+		currentAngleLabel->draw(uiShader);
 
 		if (benchmarkStage == Started)
 			benchmarkInProgress->draw(uiShader);

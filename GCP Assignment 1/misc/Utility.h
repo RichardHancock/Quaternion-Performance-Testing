@@ -21,6 +21,9 @@ namespace Utility
 	/** @brief PI constant. */
 	const float PI = 3.1415926535f;
 
+	/** @brief Two PI constant. */
+	const float TWO_PI = PI * 2.0f;
+
 	/** @brief Half PI constant. */
 	const float HALF_PI = PI * 0.5f;
 
@@ -88,6 +91,14 @@ namespace Utility
 	*/
 	std::string intToString(unsigned int num);
 
+	/**
+	@brief Converts int to a string
+	Created because some compilers still don't support std::to_string()
+
+	@param num - Long Long number to convert.
+
+	@return std::string - Converted string.
+	*/
 	std::string intToString(long long num);
 
 	/**
