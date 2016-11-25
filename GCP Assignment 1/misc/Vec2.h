@@ -3,18 +3,13 @@
 #include <iostream>
 #include <cmath>
 
-//#include "Utility.h"
-
 //Used in Other Assignments
 
 /**
 @brief Stores a 2D Vector or Position, as floats
 */
-class Vec2
+struct Vec2
 {
-	//Used to be a Struct but had so much functionality and complexity I converted it to a class
-	
-public:
 	///X Pos
 	float x;
 

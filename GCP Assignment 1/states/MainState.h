@@ -33,18 +33,20 @@ public:
 	*/
 	virtual void update(float dt);
 
-	void benchmarkModeUpdate(float dt);
-
-	void createArrayOfQuats();
-
-	void createArrayOfMats();
-
 	/**
 	@brief Render any sprites relevant to the state
 	*/
 	virtual void render();
 
 private:
+
+	void benchmarkModeUpdate(float dt);
+
+	void createArrayOfQuats();
+
+	void createArrayOfMats();
+
+	Vec4 determineRotation();
 
 	enum BenchmarkStage
 	{
@@ -89,7 +91,7 @@ private:
 		360,
 	};
 
-	const std::string axis[6] =
+	const std::string axisLabels[6] =
 	{
 		"X",
 		"-X",

@@ -61,6 +61,7 @@ MainState::~MainState()
 
 bool MainState::eventHandler()
 {
+	//Process Events
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
 	{
@@ -92,7 +93,7 @@ bool MainState::eventHandler()
 			break;
 		}
 	}
-
+	//Check if Program's closure is requested
 	if (InputManager::wasKeyReleased(SDLK_ESCAPE))
 	{
 		return true;
@@ -128,7 +129,7 @@ bool MainState::eventHandler()
 	{
 		(currentAxis < 5 ? currentAxis++ : currentAxis = 0);
 		//Change Label
-		currentAxisLabel->changeText(axis[currentAxis]);
+		currentAxisLabel->changeText(axisLabels[currentAxis]);
 	}
 
 	//Change Angle
@@ -170,16 +171,28 @@ void MainState::benchmarkModeUpdate(float dt)
 	{
 	case Started:
 	
-		float angle = 1.0f;
-		Vec3 axis(1.0f, 0.0f, 0.0f);
+		matTransforms.clear();
+		quatTransforms.clear();
+		//This makes sure the memory is released
+		matTransforms.shrink_to_fit();
+		quatTransforms.shrink_to_fit();
 
-		long long startMemorySize = MemoryCounter::getMemoryUsage();
+		Vec4 rotationData = determineRotation();
+		//Extract Data for ease of viewing
+		Vec3 axis(rotationData.x, rotationData.y, rotationData.z);
+		float angle = rotationData.w;
 
+		//The current memory usage before any relevant operations have taken place.
+		long long startMemorySize = 0; 
 		uint64_t timeTaken = 0;
-		//malloc(900000);
+	
 		if (quatMode)
 		{
-			Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) + " Quaternions");
+			Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) +
+				" Quaternions, Rotation of " + Utility::floatToString(angles[currentAngle], 0) + " degrees around " +
+				axisLabels[currentAxis] + " axis");
+			
+			startMemorySize = MemoryCounter::getMemoryUsage();
 			createArrayOfQuats();
 
 			//Start Timer
@@ -194,7 +207,11 @@ void MainState::benchmarkModeUpdate(float dt)
 		}
 		else
 		{
-			Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) + " Matrices");
+			Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) + 
+				" Matrices, Rotation of " + Utility::floatToString(angles[currentAngle], 0) + " degrees around " +
+				axisLabels[currentAxis] + " axis");
+			
+			startMemorySize = MemoryCounter::getMemoryUsage();
 			createArrayOfMats();
 
 			//Start Timer
@@ -208,7 +225,10 @@ void MainState::benchmarkModeUpdate(float dt)
 			timeTaken = perfTimer.stopCounter();
 		}
 
+
+		//Calculate Memory Usage
 		long long usedMemory = (MemoryCounter::getMemoryUsage() - startMemorySize);
+		//If the Windows Memory manager did not detect a change, default to using the size of the types to estimate
 		if (usedMemory == 0)
 		{	
 			if (quatMode)
@@ -224,15 +244,22 @@ void MainState::benchmarkModeUpdate(float dt)
 		}
 		else
 		{
+			//Provides Memory usage in KilloBytes
 			float usedMemoryKB = usedMemory / 1024.0f;
 			benchmarkMemoryResult->changeText("Benchmark Memory: " + Utility::floatToString(usedMemoryKB, 2) + "KB");
 		}
 		
 
+		//Calculate Time Taken
+		//Print Microseconds
 		Log::logI("Time Taken in Microseconds: " + Utility::intToString(timeTaken));
+
+		//Display Milliseconds (Due to Size of Microseconds)
 		float timeTakenMilliSeconds = (timeTaken / 1000.0f);
 		benchmarkTimeResult->changeText("Benchmark Time: " + Utility::floatToString(timeTakenMilliSeconds, 4) + "ms");
 
+
+		//Clear Up used Memory
 		benchmarkStage = Completed;
 		matTransforms.clear();
 		quatTransforms.clear();
@@ -258,6 +285,40 @@ void MainState::createArrayOfMats()
 	{
 		matTransforms.push_back(Mat4(1.0f));
 	}
+}
+
+Vec4 MainState::determineRotation()
+{
+	assert(currentAxis >= 0 && currentAxis < 6);
+	assert(currentAngle >= 0 && currentAngle < 7);
+
+	//Determine Angle
+	float angle = Utility::convertAngleToRadian(angles[currentAngle]);
+
+	//If current axis is odd, the Axis is a negative so flip the angle.
+	if (currentAxis % 2 == 1)
+	{
+		angle = -angle;
+	}
+
+	//Determine Axis
+	Vec3 axis(0.0f);
+
+	if (currentAxis < 2)
+	{
+		axis.x = 1.0f;
+	}
+	else if (currentAxis < 4)
+	{
+		axis.y = 1.0f;
+	}
+	else
+	{
+		axis.z = 1.0f;
+	}
+
+	//Return this as a vec4 for simplicity
+	return Vec4(axis.x, axis.y, axis.z, angle);
 }
 
 void MainState::render()

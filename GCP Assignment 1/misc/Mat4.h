@@ -4,10 +4,8 @@
 #include "Vec4.h"
 #include "Vec3.h"
 
-class Mat4
+struct Mat4
 {
-public:
-
 	Mat4()
 	{
 

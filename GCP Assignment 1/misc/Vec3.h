@@ -3,14 +3,11 @@
 #include <iostream>
 #include <cmath>
 
-//#include "Utility.h"
-
 /**
 @brief Stores a 3D Vector or Position, as floats
 */
-class Vec3
+struct Vec3
 {
-public:
 	Vec3() { }
 
 	/**

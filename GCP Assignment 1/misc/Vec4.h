@@ -6,9 +6,8 @@
 /**
 @brief Stores a 4D Vector or Position, as floats
 */
-class Vec4
+struct Vec4
 {
-public:
 	Vec4() { }
 
 	/**
