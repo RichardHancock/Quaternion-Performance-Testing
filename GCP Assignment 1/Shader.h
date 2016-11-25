@@ -40,6 +40,7 @@ public:
 	void setUniform(std::string name, const glm::vec4 & v);
 	void setUniform(std::string name, const glm::mat4 & m);
 	void setUniform(std::string name, const Mat4 & m);
+	void setUniform(std::string name, const Mat4 & m, int transpose);
 	void setUniform(std::string name, const glm::mat3 & m);
 	void setUniform(std::string name, float val);
 	void setUniform(std::string name, int val);

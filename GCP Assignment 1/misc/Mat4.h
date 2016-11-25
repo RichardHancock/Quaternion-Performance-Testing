@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "Vec4.h"
+#include "Vec3.h"
 
 class Mat4
 {
@@ -65,8 +66,23 @@ public:
 		result.w.w = w.w;
 		return result;
 	}
+	
+	static Mat4 perspective(float fov, float aspect, float near, float far)
+	{
+		float tanFov = tanf(fov / 2.0f);
+
+		Mat4 results(0.0f);
+		results.x.x = (1.0f / (aspect * tanFov));
+		results.y.y = (1.0f / tanFov);
+		results.z.z = -((far + near) / (far - near));
+		results.z.w = -1.0f;
+		results.w.z = -((2.0f * far * near) / (far - near));
+		return results;
+	}
 
 	static Mat4 translate(Mat4& mat, Vec4 pos);
+
+	void rotate(float angle, Vec3 axis);
 
 	static Mat4 rotateX(Mat4& mat, float angle);
 	static Mat4 rotateY(Mat4& mat, float angle);

@@ -45,7 +45,6 @@ std::string Utility::intToString(int num)
 	std::string result = stream.str();
 
 	return result;
-	
 }
 
 std::string Utility::intToString(uint64_t num)
@@ -56,7 +55,26 @@ std::string Utility::intToString(uint64_t num)
 	std::string result = stream.str();
 
 	return result;
+}
 
+std::string Utility::intToString(long long num)
+{
+	std::stringstream stream;
+
+	stream << num;
+	std::string result = stream.str();
+
+	return result;
+}
+
+std::string Utility::intToString(unsigned int num)
+{
+	std::stringstream stream;
+
+	stream << num;
+	std::string result = stream.str();
+
+	return result;
 }
 
 std::string Utility::floatToString(float num)
@@ -68,6 +86,16 @@ std::string Utility::floatToString(float num)
 
 	return result;
 
+}
+
+std::string Utility::floatToString(float num, unsigned int precision)
+{
+	std::stringstream stream;
+	stream.precision(precision);
+	stream << std::fixed << num;
+	std::string result = stream.str();
+
+	return result;
 }
 
 std::string Utility::vec2ToString(Vec2 num)

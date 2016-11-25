@@ -3,5 +3,5 @@
 class MemoryCounter
 {
 public:
-	static float getMemoryUsage();
+	static long long getMemoryUsage();
 };

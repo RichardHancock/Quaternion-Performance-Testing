@@ -6,6 +6,7 @@
 
 #include "../misc/Quat.h"
 #include "../ui/UI.h"
+#include "../misc/PerformanceCounter.h"
 
 class MainState : public State
 {
@@ -63,20 +64,57 @@ private:
 	BenchmarkStage benchmarkStage;
 	bool quatMode;
 
-	unsigned int amountOfTransforms;
+	PerformanceCounter perfTimer;
+
+	unsigned int currentAmountOfTransforms;
+	const unsigned int amountOfTransforms[7] = 
+	{
+		1,
+		10,
+		100,
+		1000,
+		10000,
+		100000,
+		1000000,
+	};
+
+	const float angles[7] =
+	{
+		10,
+		30,
+		45,
+		90,
+		180,
+		270,
+		360,
+	};
+
+	const std::string axis[6] =
+	{
+		"X",
+		"-X",
+		"Y",
+		"-Y",
+		"Z",
+		"-Z"
+	};
+
+	unsigned int currentAxis;
+	unsigned int currentAngle;
 
 	std::vector<Quat> quatTransforms;
 	std::vector<Mat4> matTransforms;
 
 	UITextElement* currentMode;
-	UITextElement* xLabel;
-	UITextElement* yLabel;
-	UITextElement* zLabel;
+	UITextElement* currentTransformMode;
 
-	UITextElement* xCurrent;
-	UITextElement* yCurrent;
-	UITextElement* zCurrent;
+	UITextElement* currentAxisLabel;
+	UITextElement* currentAngleLabel;
 
-	UITextElement* benchmarkResult;
+	UITextElement* benchmarkTimeResult;
+	UITextElement* benchmarkMemoryResult;
 	UITextElement* amountOfTransformsUI;
+
+	Mat4 viewMat;
+	Mat4 projMat;
 };
