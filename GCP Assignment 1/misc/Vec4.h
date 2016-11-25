@@ -26,7 +26,7 @@ public:
 
 	/**
 	@brief Create a Vec4
-	@param XYZ X,Y,Z,W value
+	@param XYZW X,Y,Z,W value
 	*/
 	Vec4(float XYZW) : x(XYZW), y(XYZW), z(XYZW), w(XYZW)
 	{
