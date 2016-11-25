@@ -30,6 +30,8 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	benchmarkMemoryResult = new UITextElement(Vec2(-1.0f, 0.9f), Vec2(0.6f, -0.1f), "Benchmark Memory: 00000B", Colour(255, 255, 255, 255), font);
 	amountOfTransformsUI = new UITextElement(Vec2(0.4f, 1.0f), Vec2(0.6f, -0.1f), "Amount of Transforms: 1000000", Colour(255, 255, 255, 255), font);
 
+	benchmarkInProgress = new UITextElement(Vec2(-0.35f, 0.1f), Vec2(0.7f, -0.2f), "Benchmark In Progress", Colour(255, 255, 255, 255), font);
+
 
 	quatMode = false;
 	benchmarkMode = false;
@@ -140,14 +142,6 @@ bool MainState::eventHandler()
 		currentAngleLabel->changeText(Utility::floatToString(angles[currentAngle], 0));
 	}
 
-	//Start Benchmark
-	if (InputManager::wasKeyPressed(SDLK_SPACE) && 
-		benchmarkStage != Started &&
-		benchmarkMode)
-	{
-		benchmarkStage = Started;
-	}
-
 	return false;
 }
 
@@ -163,14 +157,21 @@ void MainState::update(float dt)
 		benchmarkModeUpdate(dt);
 	}
 
+
+	//Start Benchmark (I do this here to give a frame to draw the proccessing Text)
+	if (InputManager::wasKeyPressed(SDLK_SPACE) &&
+		benchmarkStage != Started &&
+		benchmarkMode)
+	{
+		benchmarkStage = Started;
+	}
+
 }
 
 void MainState::benchmarkModeUpdate(float dt)
 {
-	switch (benchmarkStage)
-	{
-	case Started:
-	
+	if (benchmarkStage == Started)
+	{	
 		matTransforms.clear();
 		quatTransforms.clear();
 		//This makes sure the memory is released
@@ -261,12 +262,6 @@ void MainState::benchmarkModeUpdate(float dt)
 
 		//Clear Up used Memory
 		benchmarkStage = Completed;
-		matTransforms.clear();
-		quatTransforms.clear();
-		//This makes sure the memory is released
-		matTransforms.shrink_to_fit();
-		quatTransforms.shrink_to_fit();
-		break;
 	}
 }
 
@@ -355,6 +350,9 @@ void MainState::render()
 		currentTransformMode->draw(uiShader);
 		benchmarkTimeResult->draw(uiShader);
 		benchmarkMemoryResult->draw(uiShader);
+
+		if (benchmarkStage == Started)
+			benchmarkInProgress->draw(uiShader);
 	}
 	
 }

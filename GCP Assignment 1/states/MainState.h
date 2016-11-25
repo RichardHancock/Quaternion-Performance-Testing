@@ -117,6 +117,8 @@ private:
 	UITextElement* benchmarkMemoryResult;
 	UITextElement* amountOfTransformsUI;
 
+	UITextElement* benchmarkInProgress;
+
 	Mat4 viewMat;
 	Mat4 projMat;
 };
