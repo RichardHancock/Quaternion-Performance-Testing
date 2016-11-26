@@ -114,7 +114,8 @@ private:
 
 	/** @brief	true to enable quaternion mode, false for matrix mode. */
 	bool quatMode;
-
+	/** @brief	true to show, false to hide the help menu. */
+	bool showHelpMenu;
 
 	/** @brief	Index of the current amount of transforms. Used with amountOfTransforms array. */
 	unsigned int currentAmountOfTransforms;
@@ -165,7 +166,9 @@ private:
 
 
 	//UI Elements
-
+	
+	/** @brief	UI showing the help screen. */
+	UIElement* helpScreen;
 	/** @brief	UI showing the current mode (Benchmark or Animated). */
 	UITextElement* currentMode;
 	/** @brief	UI showing the current transform mode (Matrix or Quaternion). */

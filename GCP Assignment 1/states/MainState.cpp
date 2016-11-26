@@ -20,6 +20,10 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	barrelModel = ResourceManager::getModel("barrel.obj", ResourceManager::getTexture("barrel.png"));
 	currentAnimationAngle = 0.0f;
 
+	//Load UI Elements
+	helpScreen = new UIElement(Vec2(-1.0f, 1.0f), Vec2(2.0f, -2.0f));
+	helpScreen->addTexture(ResourceManager::getTexture("helpScreen.png"), "gSampler");
+
 	currentMode = new UITextElement(Vec2(-0.99f, -0.9f), Vec2(0.2f, -0.1f), "Animated", Colour(255, 255, 255, 255), font);
 	currentTransformMode = new UITextElement(Vec2(-0.99f, -0.8f), Vec2(0.2f, -0.1f), "Matrices", Colour(255, 255, 255, 255), font);
 	currentAxisLabel = new UITextElement(Vec2(0.915f, -0.82f), Vec2(0.03f, -0.09f), "X", Colour(255, 255, 255, 255), font);
@@ -32,6 +36,7 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	benchmarkInProgress = new UITextElement(Vec2(-0.35f, 0.1f), Vec2(0.7f, -0.2f), "Benchmark In Progress", Colour(255, 255, 255, 255), font);
 
 
+	showHelpMenu = false;
 	quatMode = false;
 	benchmarkMode = false;
 	benchmarkStage = NotRunning;
@@ -53,6 +58,7 @@ MainState::~MainState()
 	delete modelShader;
 	delete uiShader;
 
+	delete helpScreen;
 	delete currentMode;
 	delete currentTransformMode;
 	delete currentAngleLabel;
@@ -104,8 +110,13 @@ bool MainState::eventHandler()
 	}
 
 
+	if (InputManager::wasKeyPressed(SDLK_h))
+	{
+		showHelpMenu = !showHelpMenu;
+	}
+
 	//Switch between Benchmark and Animated mode
-	if (InputManager::wasKeyPressed(SDLK_F1))
+	if (InputManager::wasKeyPressed(SDLK_F1) && !showHelpMenu)
 	{
 		benchmarkMode = !benchmarkMode;
 		//Swap Label
@@ -120,7 +131,7 @@ bool MainState::eventHandler()
 	}
 
 	//Change amount of transforms being performed
-	if (InputManager::wasKeyPressed(SDLK_F2) && benchmarkMode)
+	if (InputManager::wasKeyPressed(SDLK_F2) && benchmarkMode && !showHelpMenu)
 	{
 		(currentAmountOfTransforms < 6 ? currentAmountOfTransforms++ : currentAmountOfTransforms = 0);
 		//Change Label
@@ -128,7 +139,7 @@ bool MainState::eventHandler()
 	}
 
 	//Switch between Quats and Matrices
-	if (InputManager::wasKeyPressed(SDLK_F3) && benchmarkMode)
+	if (InputManager::wasKeyPressed(SDLK_F3) && benchmarkMode && !showHelpMenu)
 	{
 		quatMode = !quatMode;
 		//Swap Label
@@ -136,7 +147,7 @@ bool MainState::eventHandler()
 	}
 
 	//Change Axis
-	if (InputManager::wasKeyPressed(SDLK_F4))
+	if (InputManager::wasKeyPressed(SDLK_F4) && !showHelpMenu)
 	{
 		(currentAxis < 5 ? currentAxis++ : currentAxis = 0);
 		//Change Label
@@ -147,7 +158,7 @@ bool MainState::eventHandler()
 	}
 
 	//Change Angle
-	if (InputManager::wasKeyPressed(SDLK_F5) && benchmarkMode)
+	if (InputManager::wasKeyPressed(SDLK_F5) && benchmarkMode && !showHelpMenu)
 	{
 		(currentAngle < 6 ? currentAngle++ : currentAngle = 0);
 		//Change Label
@@ -170,7 +181,7 @@ void MainState::update(float dt)
 		
 		//Start Benchmark (I do this here to give a frame to draw the proccessing Text)
 		if (InputManager::wasKeyPressed(SDLK_SPACE) &&
-			benchmarkStage != Started)
+			benchmarkStage != Started && !showHelpMenu)
 		{
 			benchmarkStage = Started;
 		}
@@ -391,6 +402,9 @@ void MainState::render()
 	
 
 	//2D
+	if (showHelpMenu)
+		helpScreen->draw(uiShader);
+	
 	currentMode->draw(uiShader);
 	currentAxisLabel->draw(uiShader);
 
@@ -405,5 +419,4 @@ void MainState::render()
 		if (benchmarkStage == Started)
 			benchmarkInProgress->draw(uiShader);
 	}
-	
 }
