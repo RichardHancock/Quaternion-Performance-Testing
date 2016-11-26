@@ -5,6 +5,7 @@
 #pragma once
 
 //Reference: Pete Allen's Game State Example
+//Was used in another assignment
 
 /**
 @class StateManager

@@ -7,6 +7,8 @@
 #include "../misc/Vec2.h"
 #include "Controller.h"
 
+//Was used in another assignment
+
 /** @brief	Manager for keyboard, mouse and game controller inputs. */
 class InputManager
 {

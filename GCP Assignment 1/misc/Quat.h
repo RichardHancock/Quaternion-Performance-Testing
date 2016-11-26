@@ -5,22 +5,46 @@
 #include "Mat4.h"
 #include "Vec3.h"
 
+/** @brief	A quaternion that represents a rotation. */
 struct Quat
 {
-	float w, x, y, z;
+	/** @brief	The w component. */
+	float w;
+	/** @brief	The x component. */
+	float x;
+	/** @brief	The y component. */
+	float y; 
+	/** @brief	The z component. */
+	float z;
 
+
+	/** @brief	Default constructor. */
 	Quat()
 		: w(1.0f), x(0.0f), y(0.0f), z(0.0f)
 	{
 
 	}
 
+	/**
+	 @brief	Constructor.
+	
+	 @param	w	The w component.
+	 @param	x	The x component.
+	 @param	y	The y component.
+	 @param	z	The z component.
+	 */
 	Quat(float w, float x, float y, float z)
 		: w(w), x(x), y(y), z(z)
 	{
 
 	}
 
+	/**
+	 @brief	Constructor.
+	
+	 @param	w  	The w component.
+	 @param	xyz	The xyz components.
+	 */
 	Quat(float w, Vec3 xyz)
 		: w(w), x(xyz.x), y(xyz.y), z(xyz.z)
 	{
@@ -28,11 +52,21 @@ struct Quat
 	}
 
 
+	/**
+	 @brief	Gets the magnitude of the quaternion.
+	
+	 @return	The magnitude.
+	 */
 	float magnitude()
 	{
 		return sqrt((pow(w, 2)) + (pow(x, 2)) + (pow(y, 2)) + (pow(z, 2)));
 	}
 
+	/**
+	 @brief	return a normalized quaternion.
+	
+	 @return	Normalized quaternion.
+	 */
 	Quat normalize()
 	{
 		float qMagnitude = magnitude();
@@ -40,7 +74,6 @@ struct Quat
 	#ifdef _DEBUG
 		if (qMagnitude < 0.0001f)
 		{
-			//Utility::logW("Vec4 had a length less than 0.0001f, so normalization could not be performed. Returning Vec4(0) instead.");
 			return Quat();
 		}
 	#endif
@@ -48,6 +81,13 @@ struct Quat
 		return Quat(w / qMagnitude, x / qMagnitude, y / qMagnitude, z / qMagnitude);
 	}
 
+	/**
+	 @brief	Scales the quaternion by a scalar value.
+	
+	 @param	scalar	The scalar value.
+	
+	 @return	Scaled Quaternion.
+	 */
 	Quat scale(float scalar)
 	{
 		Quat result;
@@ -58,6 +98,12 @@ struct Quat
 		return result;
 	}
 
+	/**
+	 @brief	Rotates the quaternion.
+	
+	 @param	angle	The angle in radians.
+	 @param	axis 	The selected axis.
+	 */
 	void rotate(float angle, Vec3 axis)
 	{
 		axis = axis * sinf(angle / 2);
@@ -68,6 +114,11 @@ struct Quat
 		*this = Quat(cosf(angle / 2), axis);
 	}
 
+	/**
+	 @brief	Gets a transform matrix from the quaternion.
+	
+	 @return	The matrix.
+	 */
 	Mat4 getMat()
 	{
 		Mat4 m;

@@ -9,6 +9,8 @@
 
 #include "misc/Vec2.h"
 
+//Modified but a previous version was used in another assignment
+
 /** @brief Class that handles the initialization of SDL 2 (and its add ons) across all supported platforms */
 class Platform
 {
@@ -64,7 +66,13 @@ public:
 	/** @brief Outputs the linked and compiled SDL version numbers into the log. */
 	void printSDLVersion();
 
-
+	/**
+	 @brief	Query if 'feature' is supported.
+	
+	 @param	feature	The feature.
+	
+	 @return	true if feature supported, false if not.
+	 */
 	bool isFeatureSupported(std::string feature);
 	
 private:
@@ -89,13 +97,13 @@ private:
 	/** @brief Size of the window. */
 	Vec2 windowSize;
 
-	//The resolution everything is scaled from
+	///The resolution everything is scaled from
 	const Vec2 scale;
 
-	//Platform Feature Support (Wraps SDL CPU feature detection)
+	///Platform Feature Support (Wraps SDL CPU feature detection)
 	std::unordered_map<std::string, bool> features;
 
-	void checkFeatureSupport();
 
-	
+	/** @brief	Prints out all features and if they are supported. */
+	void checkFeatureSupport();	
 };

@@ -18,7 +18,7 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	modelShader = new Shader(shaderDir + "standardVertex.shader", shaderDir + "standardFrag.shader");
 	uiShader = new Shader(shaderDir + "2D vertex.shader", shaderDir + "2D fragment.shader");
 
-	test = ResourceManager::getModel("barrel.obj", ResourceManager::getTexture("barrel.png"));
+	barrelModel = ResourceManager::getModel("barrel.obj", ResourceManager::getTexture("barrel.png"));
 	currentAnimationAngle = 0.0f;
 
 	currentMode = new UITextElement(Vec2(-0.99f, -0.9f), Vec2(0.2f, -0.1f), "Animated", Colour(255, 255, 255, 255), font);
@@ -48,6 +48,8 @@ MainState::MainState(StateManager * manager, Platform * platform)
 MainState::~MainState()
 {
 	TTF_CloseFont(font);
+
+	barrelModel->freeResourceInstance();
 
 	delete modelShader;
 	delete uiShader;
@@ -158,8 +160,23 @@ bool MainState::eventHandler()
 
 void MainState::update(float dt)
 {
-	//If Animated Mode
-	if (!benchmarkMode)
+	
+	if (benchmarkMode)
+	{
+		//If benchmark has been started run its logic
+		if (benchmarkStage == Started)
+		{
+			startBenchmark(dt);
+		}
+		
+		//Start Benchmark (I do this here to give a frame to draw the proccessing Text)
+		if (InputManager::wasKeyPressed(SDLK_SPACE) &&
+			benchmarkStage != Started)
+		{
+			benchmarkStage = Started;
+		}
+	}
+	else //If Animated Mode
 	{
 		currentAnimationAngle += 1.0f * dt;
 
@@ -175,121 +192,104 @@ void MainState::update(float dt)
 
 		createGridOfTransforms(64, rotateTransform);
 	}
-	else
-	{
-		//If in benchmark mode run its update
-		benchmarkModeUpdate(dt);
-	}
-
-
-	//Start Benchmark (I do this here to give a frame to draw the proccessing Text)
-	if (InputManager::wasKeyPressed(SDLK_SPACE) &&
-		benchmarkStage != Started &&
-		benchmarkMode)
-	{
-		benchmarkStage = Started;
-	}
-
 }
 
-void MainState::benchmarkModeUpdate(float dt)
+void MainState::startBenchmark(float dt)
 {
-	if (benchmarkStage == Started)
-	{	
-		matTransforms.clear();
-		quatTransforms.clear();
-		//This makes sure the memory is released
-		matTransforms.shrink_to_fit();
-		quatTransforms.shrink_to_fit();
+	matTransforms.clear();
+	quatTransforms.clear();
+	//This makes sure the memory is released
+	matTransforms.shrink_to_fit();
+	quatTransforms.shrink_to_fit();
 
-		Vec4 rotationData = determineRotation(angles[currentAngle], false);
-		//Extract Data for ease of viewing
-		Vec3 axis(rotationData.x, rotationData.y, rotationData.z);
-		float angle = rotationData.w;
+	Vec4 rotationData = determineRotation(angles[currentAngle], false);
+	//Extract Data for ease of viewing
+	Vec3 axis(rotationData.x, rotationData.y, rotationData.z);
+	float angle = rotationData.w;
 
-		//The current memory usage before any relevant operations have taken place.
-		long long startMemorySize = 0; 
-		uint64_t timeTaken = 0;
+	//The current memory usage before any relevant operations have taken place.
+	long long startMemorySize = 0; 
+	uint64_t timeTaken = 0;
+	PerformanceCounter perfTimer;
 	
+	if (quatMode)
+	{
+		Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) +
+			" Quaternions, Rotation of " + Utility::floatToString(angles[currentAngle], 0) + " degrees around " +
+			axisLabels[currentAxis] + " axis");
+			
+		startMemorySize = MemoryCounter::getMemoryUsage();
+		createArrayOfQuats();
+
+		//Start Timer
+		perfTimer.startCounter();
+
+		for (unsigned int i = 0; i < amountOfTransforms[currentAmountOfTransforms]; i++)
+		{
+			quatTransforms[i].rotate(angle, axis);
+		}
+
+		timeTaken = perfTimer.stopCounter();
+	}
+	else
+	{
+		Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) + 
+			" Matrices, Rotation of " + Utility::floatToString(angles[currentAngle], 0) + " degrees around " +
+			axisLabels[currentAxis] + " axis");
+			
+		startMemorySize = MemoryCounter::getMemoryUsage();
+		createArrayOfMats();
+
+		//Start Timer
+		perfTimer.startCounter();
+
+		for (unsigned int i = 0; i < amountOfTransforms[currentAmountOfTransforms]; i++)
+		{
+			matTransforms[i].rotate(angle, axis);
+		}
+
+		timeTaken = perfTimer.stopCounter();
+	}
+
+
+	//Calculate Memory Usage
+	long long usedMemory = (MemoryCounter::getMemoryUsage() - startMemorySize);
+	//If the Windows Memory manager did not detect a change, default to using the size of the types to estimate
+	if (usedMemory == 0)
+	{	
 		if (quatMode)
 		{
-			Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) +
-				" Quaternions, Rotation of " + Utility::floatToString(angles[currentAngle], 0) + " degrees around " +
-				axisLabels[currentAxis] + " axis");
-			
-			startMemorySize = MemoryCounter::getMemoryUsage();
-			createArrayOfQuats();
-
-			//Start Timer
-			perfTimer.startCounter();
-
-			for (unsigned int i = 0; i < amountOfTransforms[currentAmountOfTransforms]; i++)
-			{
-				quatTransforms[i].rotate(angle, axis);
-			}
-
-			timeTaken = perfTimer.stopCounter();
+			usedMemory = sizeof(Quat) * amountOfTransforms[currentAmountOfTransforms];
 		}
 		else
 		{
-			Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) + 
-				" Matrices, Rotation of " + Utility::floatToString(angles[currentAngle], 0) + " degrees around " +
-				axisLabels[currentAxis] + " axis");
-			
-			startMemorySize = MemoryCounter::getMemoryUsage();
-			createArrayOfMats();
-
-			//Start Timer
-			perfTimer.startCounter();
-
-			for (unsigned int i = 0; i < amountOfTransforms[currentAmountOfTransforms]; i++)
-			{
-				matTransforms[i].rotate(angle, axis);
-			}
-
-			timeTaken = perfTimer.stopCounter();
+			usedMemory = sizeof(Mat4) * amountOfTransforms[currentAmountOfTransforms];
 		}
 
-
-		//Calculate Memory Usage
-		long long usedMemory = (MemoryCounter::getMemoryUsage() - startMemorySize);
-		//If the Windows Memory manager did not detect a change, default to using the size of the types to estimate
-		if (usedMemory == 0)
-		{	
-			if (quatMode)
-			{
-				usedMemory = sizeof(Quat) * amountOfTransforms[currentAmountOfTransforms];
-			}
-			else
-			{
-				usedMemory = sizeof(Mat4) * amountOfTransforms[currentAmountOfTransforms];
-			}
-
-			benchmarkMemoryResult->changeText("Benchmark Memory: ~" + Utility::intToString(usedMemory) + "B");
-		}
-		else
-		{
-			//Provides Memory usage in KilloBytes
-			float usedMemoryKB = usedMemory / 1024.0f;
-			benchmarkMemoryResult->changeText("Benchmark Memory: " + Utility::floatToString(usedMemoryKB, 2) + "KB");
-		}
+		benchmarkMemoryResult->changeText("Benchmark Memory: ~" + Utility::intToString(usedMemory) + "B");
+	}
+	else
+	{
+		//Provides Memory usage in KilloBytes
+		float usedMemoryKB = usedMemory / 1024.0f;
+		benchmarkMemoryResult->changeText("Benchmark Memory: " + Utility::floatToString(usedMemoryKB, 2) + "KB");
+	}
 		
 
-		//Calculate Time Taken
-		//Print Microseconds
-		Log::logI("Time Taken in Microseconds: " + Utility::intToString(timeTaken));
+	//Calculate Time Taken
+	//Print Microseconds
+	Log::logI("Time Taken in Microseconds: " + Utility::intToString(timeTaken));
 
-		//Display Milliseconds (Due to Size of Microseconds)
-		float timeTakenMilliSeconds = (timeTaken / 1000.0f);
-		benchmarkTimeResult->changeText("Benchmark Time: " + Utility::floatToString(timeTakenMilliSeconds, 4) + "ms");
+	//Display Milliseconds (Due to Size of Microseconds)
+	float timeTakenMilliSeconds = (timeTaken / 1000.0f);
+	benchmarkTimeResult->changeText("Benchmark Time: " + Utility::floatToString(timeTakenMilliSeconds, 4) + "ms");
 
 
-		benchmarkStage = Completed;
+	benchmarkStage = Completed;
 
-		//Prepare the transforms for Render (Translation, Scale)
-		Mat4 rotateTransform = (quatMode ? quatTransforms[0].getMat() : matTransforms[0]);
-		createGridOfTransforms(amountOfTransforms[currentAmountOfTransforms], rotateTransform);
-	}
+	//Prepare the transforms for Render (Translation, Scale)
+	Mat4 rotateTransform = (quatMode ? quatTransforms[0].getMat() : matTransforms[0]);
+	createGridOfTransforms(amountOfTransforms[currentAmountOfTransforms], rotateTransform);
 }
 
 void MainState::createArrayOfQuats()
@@ -387,7 +387,7 @@ void MainState::render()
 	//3D
 	for (unsigned int i = 0; i < matTransforms.size(); i++)
 	{
-		test->draw(matTransforms[i], viewMat, projMat, modelShader);
+		barrelModel->draw(matTransforms[i], viewMat, projMat, modelShader);
 	}
 	
 

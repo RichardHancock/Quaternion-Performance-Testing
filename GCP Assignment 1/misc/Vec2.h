@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cmath>
 
-//Used in Other Assignments
+//Was used in another assignment
 
 /**
 @brief Stores a 2D Vector or Position, as floats
@@ -68,7 +68,6 @@ struct Vec2
 
 		if (length < 0.0001f) 
 		{
-			//Utility::logW("Vec2 had a length less than 0.0001f, so normalization could not be performed. Returning Vec2(0) instead.");
 			return Vec2(0.0f);
 		}
 

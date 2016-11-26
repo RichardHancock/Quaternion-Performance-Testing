@@ -1,16 +1,24 @@
 #pragma once
 
 #include <iostream>
+
 #include "Vec4.h"
 #include "Vec3.h"
 
+/** @brief	A matrix 4x4. */
 struct Mat4
 {
+	/** @brief	Default constructor. */
 	Mat4()
 	{
 
 	}
 
+	/**
+	 @brief	Constructor.
+	
+	 @param	id	Set to 1.0f for identity matrix.
+	 */
 	Mat4(float id) :
 		x(id, 0, 0, 0),
 		y(0, id, 0, 0),
@@ -18,10 +26,38 @@ struct Mat4
 		w(0, 0, 0, id)
 	{}
 
+	/**
+	 @brief	Constructor.
+	
+	 @param	x	Vec4 representing x row.
+	 @param	y	Vec4 representing y row.
+	 @param	z	Vec4 representing z row.
+	 @param	w	Vec4 representing w row.
+	 */
 	Mat4(Vec4 x, Vec4 y, Vec4 z, Vec4 w) :
 		x(x), y(y), z(z), w(w)
 	{}
 
+	/**
+	 @brief	Constructor.
+	
+	 @param	xx	The x.x
+	 @param	xy	The x.y
+	 @param	xz	The x.z
+	 @param	xw	The x.w
+	 @param	yx	The y.x
+	 @param	yy	The y.y
+	 @param	yz	The y.z
+	 @param	yw	The y.w
+	 @param	zx	The z.x
+	 @param	zy	The z.y
+	 @param	zz	The z.z
+	 @param	zw	The z.w
+	 @param	wx	The w.x
+	 @param	wy	The w.y
+	 @param	wz	The w.z
+	 @param	ww	The w.w
+	 */
 	Mat4(
 		float xx, float xy, float xz, float xw,
 		float yx, float yy, float yz, float yw,
@@ -35,11 +71,24 @@ struct Mat4
 	{}
 
 
+	/** @brief	X Row. */
 	Vec4 x;
+
+	/** @brief	Y Row. */
 	Vec4 y;
+
+	/** @brief	Z Row. */
 	Vec4 z;
+
+	/** @brief	W Row. */
 	Vec4 w;
 
+
+	/**
+	 @brief	Gets the transpose of the matrix.
+	
+	 @return	transposed Mat4.
+	 */
 	Mat4 transpose()
 	{
 		Mat4 result(0.0f);
@@ -64,7 +113,17 @@ struct Mat4
 		result.w.w = w.w;
 		return result;
 	}
+
+	/**
+	 @brief	Create a Perspective Matrix.
 	
+	 @param	fov   	The field of view.
+	 @param	aspect	The aspect ratio (16/9) or (4/3) probably.
+	 @param	near  	The near clipping plane.
+	 @param	far   	The far clipping plane.
+	
+	 @return	A Mat4.
+	 */
 	static Mat4 perspective(float fov, float aspect, float near, float far)
 	{
 		float tanFov = tanf(fov / 2.0f);
@@ -78,15 +137,61 @@ struct Mat4
 		return results;
 	}
 
+
+	/**
+	 @brief	Returns a translated matrix.
+	
+	 @param [in]	mat	The current matrix.
+	 @param	pos  	    The new position.
+	
+	 @return	A Mat4.
+	 */
 	static Mat4 translate(Mat4& mat, Vec4 pos);
 
+	/**
+	 @brief	Rotates around an axis.
+	 Only uses the first found axis. It does not support multiple rotation at the same time
+	
+	 @param	angle	The angle in radians.
+	 @param	axis 	The axis (1.0f) if active.
+	 */
 	void rotate(float angle, Vec3 axis);
 
+	/**
+	 @brief	Rotate around x axis.
+	
+	 @param [in,out]	mat	The matrix.
+	 @param	angle		   	The angle in radians.
+	
+	 @return	A Mat4.
+	 */
 	static Mat4 rotateX(Mat4& mat, float angle);
+
+	/**
+	 @brief	Rotate around y axis.
+	
+	 @param [in,out]	mat	The matrix.
+	 @param	angle		   	The angle in radians.
+	
+	 @return	A Mat4.
+	 */
 	static Mat4 rotateY(Mat4& mat, float angle);
+
+	/**
+	 @brief	Rotate around z axis.
+	
+	 @param [in,out]	mat	The matrix.
+	 @param	angle		   	The angle in radians.
+	
+	 @return	A Mat4.
+	 */
 	static Mat4 rotateZ(Mat4& mat, float angle);
 
-
+	/**
+	 @brief	Gets value pointer of first float.
+	
+	 @return	null if it fails, else the value pointer.
+	 */
 	float* getValuePtr()
 	{
 		return &x.x;
@@ -173,7 +278,7 @@ inline Mat4 operator * (Mat4 a, Mat4 b)
 		a.y.x * b.x.z + a.y.y * b.y.z + a.y.z * b.z.z + a.y.w * b.w.z,
 		a.y.x * b.x.w + a.y.y * b.y.w + a.y.z * b.z.w + a.y.w * b.w.w
 	);
-	result.z = Vec4(//Was copied from above so if error CHECK HERE
+	result.z = Vec4(
 		a.z.x * b.x.x + a.z.y * b.y.x + a.z.z * b.z.x + a.z.w * b.w.x,
 		a.z.x * b.x.y + a.z.y * b.y.y + a.z.z * b.z.y + a.z.w * b.w.y,
 		a.z.x * b.x.z + a.z.y * b.y.z + a.z.z * b.z.z + a.z.w * b.w.z,

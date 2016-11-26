@@ -3,11 +3,14 @@
 #include <iostream>
 #include <cmath>
 
+//Modified but a previous version was used in another assignment
+
 /**
 @brief Stores a 3D Vector or Position, as floats
 */
 struct Vec3
 {
+	/** @brief	Default constructor. */
 	Vec3() { }
 
 	/**
@@ -31,8 +34,12 @@ struct Vec3
 
 	}
 
-	/// X, Y, Z positions
-	float x,y,z;
+	/// X positions
+	float x;
+	/// Y positions
+	float y;
+	/// Z positions
+	float z;
 
 	/**
 	@brief Get the length of the vector
@@ -60,7 +67,6 @@ struct Vec3
 
 		if (length < 0.0001f) 
 		{
-			//Utility::logW("Vec3 had a length less than 0.0001f, so normalization could not be performed. Returning Vec3(0) instead.");
 			return Vec3(0.0f);
 		}
 

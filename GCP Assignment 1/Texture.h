@@ -7,7 +7,7 @@
 
 #pragma once
 
-//Used in other assignments, small modifications
+//Was used in another assignment
 
 /**
 @class Texture
@@ -30,6 +30,7 @@ public:
 	*/
 	Texture(SDL_Surface* surface);
 
+	/** @brief	Destructor. */
 	~Texture();
 
 	/**

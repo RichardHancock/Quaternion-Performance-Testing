@@ -5,6 +5,8 @@
 
 #include "Vec3.h"
 
+//Was used in another assignment
+
 struct Colour
 {
 	///Red Channel

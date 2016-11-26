@@ -14,17 +14,7 @@ std::unordered_map<std::string, GameModel*> ResourceManager::models;
 Assimp::Importer* ResourceManager::modelImporter = nullptr;
 
 Utility::SimpleTimer ResourceManager::updateDelayTimer(UPDATE_DELAY);
-SDL_Renderer* ResourceManager::renderer = nullptr;
 
-SDL_Renderer * ResourceManager::getRenderer()
-{
-	return renderer;
-}
-
-void ResourceManager::setRenderer(SDL_Renderer* newRenderer)
-{
-	ResourceManager::renderer = newRenderer;
-}
 
 void ResourceManager::cleanup()
 {

@@ -13,6 +13,8 @@
 #include "Resource.h"
 #include "misc/Utility.h"
 
+//Was used in another assignment
+
 // Forward Declaration
 class GameModel;
 
@@ -24,10 +26,6 @@ Loads and manages any resources.
 class ResourceManager
 {
 public:
-	
-	static SDL_Renderer* getRenderer();
-
-	static void setRenderer(SDL_Renderer* newRenderer);
 
 	/** @brief	Clean up memory used by Resource Manager */
 	static void cleanup();
@@ -107,8 +105,6 @@ private:
 	
 	/** @brief The update delay timer to stop update running every frame. */
 	static Utility::SimpleTimer updateDelayTimer;
-	
-	static SDL_Renderer* renderer;
 
 	/**
 	@brief Checks for expired resources and deletes any not being used.

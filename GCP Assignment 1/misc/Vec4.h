@@ -3,11 +3,14 @@
 #include <iostream>
 #include <cmath>
 
+//Modified but a previous version was used in another assignment
+
 /**
 @brief Stores a 4D Vector or Position, as floats
 */
 struct Vec4
 {
+	/** @brief	Default constructor. */
 	Vec4() { }
 
 	/**
@@ -70,12 +73,27 @@ struct Vec4
 		return Vec4(x / length, y / length, z / length, w / length);
 	}
 
-
+	/**
+	 @brief	Compute Dot product of 2 Vec4s.
+	
+	 @param	a	Vec4 A.
+	 @param	b	Vec4 B.
+	
+	 @return	The Dot Product.
+	 */
 	static float dotProduct(Vec4 a, Vec4 b)
 	{
 		return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 	}
 
+	/**
+	 @brief	Compute Cross product of 2 Vec4s.
+	
+	 @param	a	Vec4 A.
+	 @param	b	Vec4 B.
+	
+	 @return	The Cross Product.
+	 */
 	static Vec4 crossProduct(Vec4 a, Vec4 b)
 	{
 		Vec4 result;
@@ -84,7 +102,7 @@ struct Vec4
 		result.y = (a.z * b.x) - (a.x * b.z);
 		result.z = (a.x * b.y) - (a.y * b.x);
 
-		result.w = 1;
+		result.w = 1.0f;
 		return result;
 	}
 

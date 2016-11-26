@@ -2,6 +2,8 @@
 
 #include <string>
 
+//Was used in another assignment
+
 namespace Log
 {
 	/**

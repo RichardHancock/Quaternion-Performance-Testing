@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <stdlib.h>
 #include <stdint.h>
 #include <iostream>
@@ -11,7 +10,7 @@
 #include "Vec2.h"
 #include "Vec3.h"
 
-
+//Modified but a previous version was used in another assignment
 
 /**
 @brief An assortment of useful functions (random numbers, logging) that don't fit elsewhere.
@@ -38,6 +37,7 @@ namespace Utility
 	*/
 	void randomInit();
 
+	/** @brief	Has the random number system been initialized. */
 	static bool randomInitialized = false;
 
 	/**
