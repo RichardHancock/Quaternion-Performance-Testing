@@ -133,27 +133,21 @@ void Shader::setUniform(std::string name, float x, float y, float z)
 	glUniform3f(loc, x, y, z);
 }
 
-void Shader::setUniform(std::string name, const glm::vec3 & v)
+void Shader::setUniform(std::string name, const Vec3 & v)
 {
 	this->setUniform(name, v.x, v.y, v.z);
 }
 
-void Shader::setUniform(std::string name, const glm::vec4 & v)
+void Shader::setUniform(std::string name, const Vec4 & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform4f(loc, v.x, v.y, v.z, v.w);
 }
 
-void Shader::setUniform(std::string name, const glm::vec2 & v)
+void Shader::setUniform(std::string name, const Vec2 & v)
 {
 	GLint loc = getUniformLocation(name);
 	glUniform2f(loc, v.x, v.y);
-}
-
-void Shader::setUniform(std::string name, const glm::mat4 & m)
-{
-	GLint loc = getUniformLocation(name);
-	glUniformMatrix4fv(loc, 1, GL_FALSE, &m[0][0]);
 }
 
 void Shader::setUniform(std::string name, const Mat4 & m)
@@ -166,12 +160,6 @@ void Shader::setUniform(std::string name, const Mat4 & m, int transpose)
 {
 	GLint loc = getUniformLocation(name);
 	glUniformMatrix4fv(loc, 1, transpose, m[0]);
-}
-
-void Shader::setUniform(std::string name, const glm::mat3 & m)
-{
-	GLint loc = getUniformLocation(name);
-	glUniformMatrix3fv(loc, 1, GL_FALSE, &m[0][0]);
 }
 
 void Shader::setUniform(std::string name, float val)

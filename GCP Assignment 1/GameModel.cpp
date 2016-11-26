@@ -1,7 +1,5 @@
 #include "GameModel.h"
 
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
 #include "misc/Vertex.h"
@@ -26,7 +24,7 @@ GameModel::GameModel(aiMesh* mesh, Texture* texture)
 	addTexture(texture, "gSampler");
 }
 
-GameModel::GameModel(std::vector<glm::vec3>* vertices, std::vector<glm::vec3>* normals, std::vector<glm::vec2>* uvs,
+GameModel::GameModel(std::vector<Vec3>* vertices, std::vector<Vec3>* normals, std::vector<Vec2>* uvs,
 	std::vector<unsigned int>* indices, Texture* texture) : Resource()
 {
 	// Initialise variables
@@ -187,7 +185,7 @@ void GameModel::loadModelDataFromASSIMP(aiMesh* mesh)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void GameModel::addVBO(std::vector<glm::vec3> &data)
+void GameModel::addVBO(std::vector<Vec3> &data)
 {
 	glBindVertexArray(VAO);
 
@@ -196,7 +194,7 @@ void GameModel::addVBO(std::vector<glm::vec3> &data)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	VBOs.push_back(VBO);
 
-	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(glm::vec3), &data[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(Vec3), &data[0], GL_STATIC_DRAW);
 
 	//Enable the next available attrib array which is equal to (the number of VBOS - 1)
 	GLuint attribArrayID = VBOs.size() - 1;
@@ -214,7 +212,7 @@ void GameModel::addVBO(std::vector<glm::vec3> &data)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void GameModel::addVBO(std::vector<glm::vec2> &data)
+void GameModel::addVBO(std::vector<Vec2> &data)
 {
 	glBindVertexArray(VAO);
 
@@ -223,7 +221,7 @@ void GameModel::addVBO(std::vector<glm::vec2> &data)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	VBOs.push_back(VBO);
 
-	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(glm::vec2), &data[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(Vec2), &data[0], GL_STATIC_DRAW);
 
 	//Enable the next available attrib array which is equal to (the number of VBOS - 1)
 	GLuint attribArrayID = VBOs.size() - 1;

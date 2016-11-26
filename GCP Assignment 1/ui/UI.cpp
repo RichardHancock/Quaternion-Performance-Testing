@@ -19,18 +19,18 @@ void UIElement::createVertices()
 	//TODO Add scaling
 	Vec2 max(pos.x + size.x, pos.y + size.y);
 
-	std::vector<glm::vec3> vertices = {
-		glm::vec3(pos.x, pos.y, 0.0f),
-		glm::vec3(max.x, pos.y, 0.0f),
-		glm::vec3(pos.x, max.y, 0.0f),
-		glm::vec3(max.x, max.y, 0.0f)
+	std::vector<Vec3> vertices = {
+		Vec3(pos.x, pos.y, 0.0f),
+		Vec3(max.x, pos.y, 0.0f),
+		Vec3(pos.x, max.y, 0.0f),
+		Vec3(max.x, max.y, 0.0f)
 	};
 
-	std::vector<glm::vec2> uvs = {
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(1.0f, 0.0f),
-		glm::vec2(0.0f, 1.0f),
-		glm::vec2(1.0f, 1.0f)
+	std::vector<Vec2> uvs = {
+		Vec2(0.0f, 0.0f),
+		Vec2(1.0f, 0.0f),
+		Vec2(0.0f, 1.0f),
+		Vec2(1.0f, 1.0f)
 	};
 
 	std::vector<unsigned int> indices = {

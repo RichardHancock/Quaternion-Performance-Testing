@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <string>
 #include <assimp/scene.h>
@@ -43,9 +42,9 @@ public:
 	 @param [in,out]	texture 	If non-null, the texture.
 	 */
 	GameModel(
-		std::vector<glm::vec3>* vertices,
-		std::vector<glm::vec3>* normals,
-		std::vector<glm::vec2>* uvs,
+		std::vector<Vec3>* vertices,
+		std::vector<Vec3>* normals,
+		std::vector<Vec2>* uvs,
 		std::vector<unsigned int>* indices,
 		Texture* texture);
 	
@@ -130,14 +129,14 @@ private:
 	
 	 @param [in]	data	The data.
 	 */
-	void addVBO(std::vector<glm::vec3> &data);
+	void addVBO(std::vector<Vec3> &data);
 
 	/**
 	@brief	Adds a VBO of Vec2 data to the VAO.
 
 	@param [in]	data	The data.
 	*/
-	void addVBO(std::vector<glm::vec2> &data);
+	void addVBO(std::vector<Vec2> &data);
 
 	/**
 	 @brief	Adds an index buffer to the VAO.

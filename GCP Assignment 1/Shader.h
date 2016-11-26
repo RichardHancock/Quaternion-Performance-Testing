@@ -3,10 +3,10 @@
 #include <GL/glew.h>
 #include <string>
 #include <map>
-#include <glm/glm.hpp>
 #include <SDL.h>
 
 #include "misc/Mat4.h"
+#include "misc/Vec2.h"
 
 //Modified but a previous version was used in another assignment
 
@@ -53,7 +53,7 @@ public:
 	 @param	name	The shader variable name.
 	 @param	v   	The Vec2.
 	 */
-	void setUniform(std::string name, const glm::vec2 & v);
+	void setUniform(std::string name, const Vec2 & v);
 
 	/**
 	 @brief	Pass Vector3 to the shader.
@@ -61,7 +61,7 @@ public:
 	 @param	name	The shader variable name.
 	 @param	v   	The Vec3.
 	 */
-	void setUniform(std::string name, const glm::vec3 & v);
+	void setUniform(std::string name, const Vec3 & v);
 
 	/**
 	 @brief	Pass Vector4 to the shader.
@@ -69,15 +69,7 @@ public:
 	 @param	name	The shader variable name.
 	 @param	v   	The Vec4.
 	 */
-	void setUniform(std::string name, const glm::vec4 & v);
-
-	/**
-	 @brief	Pass Mat4 to the shader.
-
-	 @param	name	The shader variable name.
-	 @param	m   	The Mat4.
-	 */
-	void setUniform(std::string name, const glm::mat4 & m);
+	void setUniform(std::string name, const Vec4 & v);
 
 	/**
 	 @brief	Pass Mat4 to the shader.
@@ -95,14 +87,6 @@ public:
 	 @param transpose Should the matrix be transposed (Pass GL_TRUE or GL_FALSE)
 	 */
 	void setUniform(std::string name, const Mat4 & m, int transpose);
-
-	/**
-	 @brief	Pass Mat3 to the shader.
-
-	 @param	name	The shader variable name.
-	 @param	m   	The Mat3.
-	 */
-	void setUniform(std::string name, const glm::mat3 & m);
 
 	/**
 	 @brief	Pass a float to the shader.

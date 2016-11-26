@@ -1,6 +1,5 @@
 #include "MainState.h"
 
-#include "glm/gtc/matrix_transform.hpp"
 #include "../misc/Mat4.h"
 #include "../misc/Quat.h"
 #include "../misc/MemoryCounter.h"
