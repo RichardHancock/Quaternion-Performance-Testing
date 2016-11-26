@@ -193,8 +193,6 @@ void MainState::update(float dt)
 		if (currentAnimationAngle > Utility::TWO_PI)
 			currentAnimationAngle = 0.0f;
 
-		Log::logI(Utility::floatToString(currentAnimationAngle));
-
 		Vec4 rotationData = determineRotation(currentAnimationAngle, true);
 
 		Mat4 rotateTransform(1.0f);
