@@ -106,12 +106,12 @@ struct Quat
 	 */
 	void rotate(float angle, Vec3 axis)
 	{
-		axis = axis * sinf(angle / 2);
+		axis = axis * sinf(angle / 2.0f);
 
 		//Flip Y axis the correct way.
 		axis.y = -axis.y;
 
-		*this = Quat(cosf(angle / 2), axis);
+		*this = Quat(cosf(angle / 2.0f), axis);
 	}
 
 	/**
