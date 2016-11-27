@@ -24,6 +24,7 @@ MainState::MainState(StateManager * manager, Platform * platform)
 	helpScreen = new UIElement(Vec2(-1.0f, 1.0f), Vec2(2.0f, -2.0f));
 	helpScreen->addTexture(ResourceManager::getTexture("helpScreen.png"), "gSampler");
 
+	pressH = new UITextElement(Vec2(-0.20f, 0.9f), Vec2(0.35f, -0.15f), "Press H for Help", Colour(255, 255, 255, 255), font);
 	currentMode = new UITextElement(Vec2(-0.99f, -0.9f), Vec2(0.2f, -0.1f), "Animated", Colour(255, 255, 255, 255), font);
 	currentTransformMode = new UITextElement(Vec2(-0.99f, -0.8f), Vec2(0.2f, -0.1f), "Matrices", Colour(255, 255, 255, 255), font);
 	currentAxisLabel = new UITextElement(Vec2(0.915f, -0.82f), Vec2(0.03f, -0.09f), "X", Colour(255, 255, 255, 255), font);
@@ -59,6 +60,7 @@ MainState::~MainState()
 	delete uiShader;
 
 	delete helpScreen;
+	delete pressH;
 	delete currentMode;
 	delete currentTransformMode;
 	delete currentAngleLabel;
@@ -244,18 +246,21 @@ void MainState::startBenchmark(float dt)
 		Log::logI("Benchmark Started: " + Utility::intToString(amountOfTransforms[currentAmountOfTransforms]) + 
 			" Matrices, Rotation of " + Utility::floatToString(angles[currentAngle], 0) + " degrees around " +
 			axisLabels[currentAxis] + " axis");
-			
+		
+		//Get Initial Memory Usage
 		startMemorySize = MemoryCounter::getMemoryUsage();
-		createArrayOfMats();
+		createArrayOfMats(); //Create array of Identity Mat4x4
 
 		//Start Timer
 		perfTimer.startCounter();
 
+		//Loop through every Mat in the array and rotate by and and axis
 		for (unsigned int i = 0; i < amountOfTransforms[currentAmountOfTransforms]; i++)
 		{
 			matTransforms[i].rotate(angle, axis);
 		}
 
+		//Stop Timer and store the elapsed time
 		timeTaken = perfTimer.stopCounter();
 	}
 
@@ -403,6 +408,7 @@ void MainState::render()
 	if (showHelpMenu)
 		helpScreen->draw(uiShader);
 	
+	pressH->draw(uiShader);
 	currentMode->draw(uiShader);
 	currentAxisLabel->draw(uiShader);
 

@@ -169,6 +169,8 @@ private:
 	
 	/** @brief	UI showing the help screen. */
 	UIElement* helpScreen;
+	/** @brief	UI showing the control to access the help menu. */
+	UITextElement* pressH;
 	/** @brief	UI showing the current mode (Benchmark or Animated). */
 	UITextElement* currentMode;
 	/** @brief	UI showing the current transform mode (Matrix or Quaternion). */
